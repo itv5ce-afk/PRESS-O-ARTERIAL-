@@ -85,6 +85,30 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 #toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:#171a28;color:#fff;padding:12px 20px;border-radius:999px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:60;box-shadow:0 8px 24px rgba(0,0,0,.4)}
 #toast.show{opacity:1;transform:translateX(-50%)}
 .disclaimer{text-align:center;color:var(--muted);font-size:11px;margin-top:22px;font-weight:600}
+
+/* ============ NOVO: ALTURA (card largo) ============ */
+.metric.wide{grid-column:1/-1;flex-direction:row;justify-content:space-between;align-items:center;text-align:left;padding:16px 18px;flex-wrap:wrap;gap:12px}
+.w-mid{display:flex;flex-direction:column;align-items:flex-start;gap:2px;flex:1;min-width:110px}
+
+/* ============ NOVO: CARD IMC & PESO IDEAL ============ */
+.imc-card{margin-top:14px}
+.imc-head{font-size:17px;font-weight:800;margin-bottom:14px;display:flex;gap:8px;align-items:center}
+.imc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;text-align:center;margin-bottom:6px}
+.imc-box{background:var(--card2);border-radius:14px;padding:12px 6px}
+.imc-label{font-size:10px;color:var(--muted);font-weight:800;letter-spacing:.4px;text-transform:uppercase;display:block;margin-bottom:4px}
+.imc-val{font-size:22px;font-weight:800}
+.imc-val.green{color:#4ade80}
+.imc-val small{font-size:12px;color:var(--muted);font-weight:700}
+.pi-range{font-size:11px;color:var(--muted);font-weight:700;text-align:center;margin-top:4px}
+.badge-center{justify-content:center}
+.gauge{position:relative;height:16px;border-radius:999px;margin:26px 4px 6px;
+background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16.1%,#4ade80 16.1%,#4ade80 39.3%,#fde047 39.3%,#fde047 57.1%,#fb923c 57.1%,#fb923c 75%,#f87171 75%,#f87171 92.9%,#dc2626 92.9%,#dc2626 100%)}
+.gauge-mark{position:absolute;top:-17px;transform:translateX(-50%);font-size:14px;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.6);transition:left .3s;display:none}
+.gauge-scale{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);font-weight:700;margin:0 4px}
+.imc-table{margin-top:14px;display:flex;flex-direction:column;gap:6px}
+.imc-row{display:flex;justify-content:space-between;gap:10px;border-radius:12px;padding:9px 12px;font-size:13px;font-weight:700;background:var(--card2)}
+.imc-row.active{outline:2px solid var(--blue);color:#fff !important}
+.imc-hint{text-align:center;font-size:12px;margin-top:12px;font-weight:600}
 </style>
 </head>
 <body>
@@ -133,7 +157,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
         <div class="badge-row" id="b-fc"></div>
         <button class="btn primary block" onclick="openForm('fc')">Registro</button>
       </div>
+
+      <!-- ============ NOVO: MEDIDOR DE ALTURA ============ -->
+      <div class="card metric wide">
+        <div class="m-icon" style="background:rgba(74,222,128,.15)">📏</div>
+        <div class="w-mid">
+          <div class="m-title">Altura</div>
+          <div class="m-value"><span id="v-altura">--</span><small>cm</small></div>
+        </div>
+        <button class="btn primary" onclick="openForm('altura')">Registro</button>
+      </div>
     </div>
+
+    <!-- ============ NOVO: IMC & PESO IDEAL ============ -->
+    <div class="card imc-card">
+      <div class="imc-head">📐 IMC & Peso Ideal</div>
+      <div class="imc-grid">
+        <div class="imc-box"><span class="imc-label">IMC</span><div class="imc-val" id="v-imc">--</div></div>
+        <div class="imc-box"><span class="imc-label">Peso ideal</span><div class="imc-val green" id="v-pesoideal">--</div></div>
+      </div>
+      <div class="badge-row badge-center" id="b-imc"></div>
+      <div class="pi-range" id="pi-range"></div>
+      <div class="gauge"><div id="gaugeMark" class="gauge-mark">▼</div></div>
+      <div class="gauge-scale"><span>14</span><span>IMC</span><span>42</span></div>
+      <div class="imc-table" id="imcTable"></div>
+      <div class="muted imc-hint" id="imcHint">Registre seu <b>peso</b> e sua <b>altura</b> para calcular o IMC e o peso ideal.</div>
+    </div>
+
     <div class="disclaimer">⚠️ App para registro pessoal — não substitui orientação médica.</div>
   </section>
 
@@ -165,7 +215,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 /* ================= DADOS ================= */
 const KEY='minhaSaudeDB_v1';
 let db=loadDB();
-function loadDB(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.peso&&d.pressao&&d.acucar&&d.fc)return d;}catch(e){}return{peso:[],pressao:[],acucar:[],fc:[]};}
+function loadDB(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d){d.peso=d.peso||[];d.pressao=d.pressao||[];d.acucar=d.acucar||[];d.fc=d.fc||[];d.altura=d.altura||[];return d;}}catch(e){}return{peso:[],pressao:[],acucar:[],fc:[],altura:[]};}
 function saveDB(){localStorage.setItem(KEY,JSON.stringify(db));}
 const uid=()=>Date.now().toString(36)+Math.floor(Math.random()*1e6).toString(36);
 const q=id=>document.getElementById(id);
@@ -181,13 +231,21 @@ function classPressao(s,d){if(s>=180||d>=120)return['Crise hipertensiva','red'];
 function classAcucar(v,ctx){if(v<70)return['Hipoglicemia','red'];if(ctx==='Jejum'){if(v<100)return['Normal','green'];if(v<126)return['Pré-diabetes','yellow'];return['Alto','red'];}if(v<140)return['Normal','green'];if(v<200)return['Elevado','yellow'];return['Alto','red'];}
 function classFC(v){if(v<50)return['Bradicardia','blue'];if(v<=100)return['Normal','green'];if(v<=120)return['Elevada','yellow'];return['Taquicardia','red'];}
 
+/* ============ NOVO: CLASSIFICAÇÃO DO IMC ============ */
+function classIMC(v){if(v<16)return['Baixo peso extremo','red'];if(v<17)return['Baixo peso grave','red'];if(v<18.5)return['Baixo peso','orange'];if(v<25)return['Normal','green'];if(v<30)return['Sobrepeso','yellow'];if(v<35)return['Obesidade grau I','orange'];if(v<40)return['Obesidade grau II','red'];return['Obesidade grau III','red'];}
+const IMC_ROWS=[['Baixo peso extremo','< 16','red'],['Baixo peso grave','16 – 17','red'],['Baixo peso','17 – 18,5','orange'],['Normal','18,5 – 25','green'],['Sobrepeso','25 – 30','yellow'],['Obesidade grau I','30 – 35','orange'],['Obesidade grau II','35 – 40','red'],['Obesidade grau III','> 40','red']];
+function imcRowIndex(v){if(v<16)return 0;if(v<17)return 1;if(v<18.5)return 2;if(v<25)return 3;if(v<30)return 4;if(v<35)return 5;if(v<40)return 6;return 7;}
+function renderImcTable(imc){const act=(imc==null||isNaN(imc))?-1:imcRowIndex(imc);
+  q('imcTable').innerHTML=IMC_ROWS.map((r,i)=>`<div class="imc-row${i===act?' active':''}" style="color:${COR[r[2]][0]}">${r[0]}<span>${r[1]}</span></div>`).join('');}
+
 /* ================= HOME ================= */
 function renderHome(){
-  const p=last('peso'),pr=last('pressao'),a=last('acucar'),f=last('fc');
+  const p=last('peso'),pr=last('pressao'),a=last('acucar'),f=last('fc'),h=last('altura');
   q('v-peso').textContent=p?fmt1(p.v):'--';
   q('v-pressao').textContent=pr?pr.sys+'/'+pr.dia:'--';
   q('v-acucar').textContent=a?fmt1(a.v):'--';
   q('v-fc').textContent=f?f.v:'--';
+  q('v-altura').textContent=h?fmt1(h.v):'--';
   let bp='';
   if(p&&db.peso.length>1){const asc=[...db.peso].sort((x,y)=>x.d-y.d);const diff=p.v-asc[asc.length-2].v;const d1=fmt1(Math.abs(diff));
     bp=Math.abs(diff)<0.05?badgeHTML('estável','gray'):(diff<0?badgeHTML('▼ '+d1+' kg','green'):badgeHTML('▲ '+d1+' kg','yellow'));}
@@ -195,18 +253,42 @@ function renderHome(){
   q('b-pressao').innerHTML=pr?badgeHTML(...classPressao(pr.sys,pr.dia)):'';
   q('b-acucar').innerHTML=a?badgeHTML(...classAcucar(a.v,a.ctx)):'';
   q('b-fc').innerHTML=f?badgeHTML(...classFC(f.v)):'';
-  const all=[...db.peso,...db.pressao,...db.acucar,...db.fc];
+
+  /* ---- NOVO: cálculo IMC + Peso Ideal ---- */
+  if(p&&h){
+    const hm=h.v/100, imc=p.v/(hm*hm);
+    q('v-imc').textContent=fmt1(imc);
+    const [t,c]=classIMC(imc);
+    q('b-imc').innerHTML=badgeHTML(t,c);
+    const pi=22*hm*hm, pmin=18.5*hm*hm, pmax=25*hm*hm;
+    q('v-pesoideal').innerHTML=fmt1(pi)+'<small>kg</small>';
+    q('pi-range').textContent='Faixa saudável: '+fmt1(pmin)+' – '+fmt1(pmax)+' kg';
+    const pct=Math.min(100,Math.max(0,(imc-14)/(42-14)*100));
+    const mk=q('gaugeMark'); mk.style.display='block'; mk.style.left=pct+'%';
+    renderImcTable(imc);
+    q('imcHint').style.display='none';
+  }else{
+    q('v-imc').textContent='--';
+    q('v-pesoideal').textContent='--';
+    q('b-imc').innerHTML='';
+    q('pi-range').textContent='';
+    q('gaugeMark').style.display='none';
+    renderImcTable(null);
+    q('imcHint').style.display='block';
+  }
+
+  const all=[...db.peso,...db.pressao,...db.acucar,...db.fc,...db.altura];
   q('lastTime').textContent=all.length?fmtTime(Math.max(...all.map(r=>r.d))):'--:--';
 }
 
 /* ================ HISTÓRICO ================ */
-const TABS=[{id:'peso',name:'Peso',icon:'⚖️'},{id:'pressao',name:'Pressão',icon:'🩺'},{id:'acucar',name:'Açúcar',icon:'🩸'},{id:'fc',name:'Coração',icon:'❤️'}];
+const TABS=[{id:'peso',name:'Peso',icon:'⚖️'},{id:'pressao',name:'Pressão',icon:'🩺'},{id:'acucar',name:'Açúcar',icon:'🩸'},{id:'fc',name:'Coração',icon:'❤️'},{id:'altura',name:'Altura',icon:'📏'}];
 let curTab='peso';
 function setTab(t){curTab=t;renderHistory();}
 function renderHistory(){
   q('tabs').innerHTML=TABS.map(t=>`<button class="${t.id===curTab?'active':''}" onclick="setTab('${t.id}')">${t.icon} ${t.name}</button>`).join('');
   const recs=[...db[curTab]].sort((a,b)=>b.d-a.d);
-  const fmtV=v=>curTab==='peso'||curTab==='acucar'?fmt1(v):Math.round(v);
+  const fmtV=v=>(curTab==='peso'||curTab==='acucar'||curTab==='altura')?fmt1(v):Math.round(v);
   if(recs.length){
     const vals=curTab==='pressao'?recs.map(r=>r.sys):recs.map(r=>r.v);
     const min=Math.min(...vals),max=Math.max(...vals),med=vals.reduce((s,v)=>s+v,0)/vals.length;
@@ -222,6 +304,7 @@ function itemHTML(r){
   if(curTab==='pressao'){val=`${r.sys}/${r.dia} <small>mmHg</small>${r.pul?` · ${r.pul} bpm`:''}`;bad=badgeHTML(...classPressao(r.sys,r.dia));}
   if(curTab==='acucar'){val=`${fmt1(r.v)} <small>mg/dL</small>`;bad=badgeHTML(...classAcucar(r.v,r.ctx));}
   if(curTab==='fc'){val=`${r.v} <small>bpm</small>`;bad=badgeHTML(...classFC(r.v));}
+  if(curTab==='altura')val=`${fmt1(r.v)} <small>cm</small>`;
   return `<div class="h-item"><div><div class="h-val">${val}</div><div class="h-date">${fmtDate(r.d)}${r.ctx?' · '+r.ctx:''}</div></div><div class="h-right">${bad}<button class="del" onclick="delRec('${r.id}')">🗑️</button></div></div>`;
 }
 function delRec(id){if(!confirm('Excluir este registro?'))return;db[curTab]=db[curTab].filter(r=>r.id!==id);saveDB();renderAll();toast('Registro excluído');}
@@ -237,6 +320,7 @@ function drawChart(recs){
   if(curTab==='peso')series=[{cor:'#60a5fa',pts:asc.map(r=>({x:r.d,y:r.v}))}];
   if(curTab==='fc')series=[{cor:'#f87171',pts:asc.map(r=>({x:r.d,y:r.v}))}];
   if(curTab==='acucar')series=[{cor:'#fb923c',pts:asc.map(r=>({x:r.d,y:r.v}))}];
+  if(curTab==='altura')series=[{cor:'#4ade80',pts:asc.map(r=>({x:r.d,y:r.v}))}];
   if(curTab==='pressao')series=[{cor:'#f87171',pts:asc.map(r=>({x:r.d,y:r.sys}))},{cor:'#60a5fa',pts:asc.map(r=>({x:r.d,y:r.dia}))}];
   const allY=series.flatMap(s=>s.pts.map(p=>p.y));let minY=Math.min(...allY),maxY=Math.max(...allY);
   if(minY===maxY){minY-=5;maxY+=5;}const pad=(maxY-minY)*.2;minY-=pad;maxY+=pad;
@@ -257,13 +341,14 @@ const FORMS={
  peso:{t:'Registrar Peso',i:'⚖️',h:`<div class="field"><label>Peso (kg)</label><input id="f-v" type="number" inputmode="decimal" step="0.1" min="1" max="400" placeholder="Ex.: 72.5" autocomplete="off"></div>`},
  pressao:{t:'Registrar Pressão Arterial',i:'🩺',h:`<div class="form-row"><div class="field"><label>Sistólica (mmHg)</label><input id="f-s" type="number" inputmode="numeric" min="40" max="260" placeholder="120"></div><div class="field"><label>Diastólica (mmHg)</label><input id="f-d" type="number" inputmode="numeric" min="20" max="200" placeholder="80"></div></div><div class="field"><label>Pulso (opcional, bpm)</label><input id="f-p" type="number" inputmode="numeric" min="20" max="250" placeholder="72"></div>`},
  acucar:{t:'Registrar Glicemia',i:'🩸',h:`<div class="field"><label>Glicose (mg/dL)</label><input id="f-v" type="number" inputmode="decimal" min="20" max="600" placeholder="Ex.: 95"></div><div class="field"><label>Contexto</label><select id="f-c"><option>Jejum</option><option>Antes da refeição</option><option>Após refeição</option><option>Antes de dormir</option></select></div>`},
- fc:{t:'Registrar Frequência Cardíaca',i:'❤️',h:`<div class="field"><label>Frequência (bpm)</label><input id="f-v" type="number" inputmode="numeric" min="20" max="250" placeholder="Ex.: 72"></div><div class="field"><label>Contexto</label><select id="f-c"><option>Repouso</option><option>Após exercício</option><option>Estresse</option></select></div>`}
+ fc:{t:'Registrar Frequência Cardíaca',i:'❤️',h:`<div class="field"><label>Frequência (bpm)</label><input id="f-v" type="number" inputmode="numeric" min="20" max="250" placeholder="Ex.: 72"></div><div class="field"><label>Contexto</label><select id="f-c"><option>Repouso</option><option>Após exercício</option><option>Estresse</option></select></div>`},
+ altura:{t:'Registrar Altura',i:'📏',h:`<div class="field"><label>Altura (cm)</label><input id="f-v" type="number" inputmode="decimal" step="0.1" min="30" max="250" placeholder="Ex.: 170" autocomplete="off"></div>`}
 };
 let curForm=null;
 function openForm(t){curForm=t;const f=FORMS[t];
   q('modalBox').innerHTML=`<div class="m-head"><span class="m-ico">${f.i}</span><h2>${f.t}</h2><button class="x" onclick="closeModal()">✕</button></div>${f.h}<div class="m-foot"><button class="btn ghost" onclick="closeModal()">Cancelar</button><button class="btn primary" onclick="saveForm()">💾 Salvar</button></div>`;
   q('overlay').classList.add('show');setTimeout(()=>{const el=document.querySelector('#modalBox input');if(el)el.focus();},300);}
-function openQuick(){q('modalBox').innerHTML=`<div class="m-head"><span class="m-ico">💙</span><h2>O que registrar?</h2><button class="x" onclick="closeModal()">✕</button></div><div class="quick-grid"><button class="quick-btn" onclick="openForm('peso')"><span class="qi">⚖️</span>Peso</button><button class="quick-btn" onclick="openForm('pressao')"><span class="qi">🩺</span>Pressão</button><button class="quick-btn" onclick="openForm('acucar')"><span class="qi">🩸</span>Açúcar</button><button class="quick-btn" onclick="openForm('fc')"><span class="qi">❤️</span>Coração</button></div>`;q('overlay').classList.add('show');}
+function openQuick(){q('modalBox').innerHTML=`<div class="m-head"><span class="m-ico">💙</span><h2>O que registrar?</h2><button class="x" onclick="closeModal()">✕</button></div><div class="quick-grid"><button class="quick-btn" onclick="openForm('peso')"><span class="qi">⚖️</span>Peso</button><button class="quick-btn" onclick="openForm('pressao')"><span class="qi">🩺</span>Pressão</button><button class="quick-btn" onclick="openForm('acucar')"><span class="qi">🩸</span>Açúcar</button><button class="quick-btn" onclick="openForm('fc')"><span class="qi">❤️</span>Coração</button><button class="quick-btn" onclick="openForm('altura')"><span class="qi">📏</span>Altura</button></div>`;q('overlay').classList.add('show');}
 function closeModal(){q('overlay').classList.remove('show');curForm=null;}
 const gv=id=>{const el=q(id);return el?el.value.trim():'';};
 function saveForm(){const t=curForm;if(!t)return;
@@ -273,6 +358,7 @@ function saveForm(){const t=curForm;if(!t)return;
     if(p&&(p<20||p>250))return toast('⚠️ Pulso inválido');db.pressao.push({id:uid(),sys:s,dia:d,pul:p,d:Date.now()});}
   else if(t==='acucar'){const v=parseFloat(gv('f-v').replace(',','.'));if(!v||v<20||v>600)return toast('⚠️ Glicemia inválida');db.acucar.push({id:uid(),v,ctx:gv('f-c'),d:Date.now()});}
   else if(t==='fc'){const v=parseInt(gv('f-v'));if(!v||v<20||v>250)return toast('⚠️ Frequência inválida');db.fc.push({id:uid(),v,ctx:gv('f-c'),d:Date.now()});}
+  else if(t==='altura'){const v=parseFloat(gv('f-v').replace(',','.'));if(!v||v<30||v>250)return toast('⚠️ Altura inválida');db.altura.push({id:uid(),v,d:Date.now()});}
   saveDB();closeModal();renderAll();toast('✅ Registro salvo!');}
 
 /* ============== NAVEGAÇÃO / UTIL ============== */
@@ -285,6 +371,7 @@ function exportCSV(){const recs=[...db[curTab]].sort((a,b)=>a.d-b.d);if(!recs.le
   if(curTab==='pressao'){rows.push(['Data','Sistólica','Diastólica','Pulso']);recs.forEach(r=>rows.push([fmtDate(r.d),r.sys,r.dia,r.pul??'']));}
   if(curTab==='acucar'){rows.push(['Data','Glicose (mg/dL)','Contexto']);recs.forEach(r=>rows.push([fmtDate(r.d),r.v,r.ctx||'']));}
   if(curTab==='fc'){rows.push(['Data','BPM','Contexto']);recs.forEach(r=>rows.push([fmtDate(r.d),r.v,r.ctx||'']));}
+  if(curTab==='altura'){rows.push(['Data','Altura (cm)']);recs.forEach(r=>rows.push([fmtDate(r.d),String(r.v).replace('.',',')]));}
   const csv='\uFEFF'+rows.map(r=>r.join(';')).join('\n');const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='historico_'+curTab+'.csv';
   document.body.appendChild(a);a.click();a.remove();toast('📥 CSV exportado');}
