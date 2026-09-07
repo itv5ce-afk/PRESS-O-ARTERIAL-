@@ -8,8 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <link rel="icon" type="image/png" href="favicon.png"><link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🩺</text></svg>">
-    <title>Minha Saúde Digital</title>
-<title>Minha Saúde — Registros</title>
+<title>Minha Saúde Digital</title>
 <style>
 :root{--bg:#262b3f;--card:#3a4159;--card2:#4a5170;--blue:#4d7cf3;--muted:#9aa3c0;--radius:22px}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
@@ -109,6 +108,13 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
 .imc-row{display:flex;justify-content:space-between;gap:10px;border-radius:12px;padding:9px 12px;font-size:13px;font-weight:700;background:var(--card2)}
 .imc-row.active{outline:2px solid var(--blue);color:#fff !important}
 .imc-hint{text-align:center;font-size:12px;margin-top:12px;font-weight:600}
+
+/* ============ MEDIDOR DE ÁGUA ============ */
+.agua-card .agua-progress-wrap{width:100%;background:var(--card2);border-radius:999px;height:14px;margin:8px 0;overflow:hidden}
+.agua-progress{height:100%;border-radius:999px;background:var(--blue);width:0%;transition:width .4s ease}
+.agua-meta{font-size:13px;color:var(--muted);font-weight:700;display:flex;justify-content:space-between;width:100%}
+.agua-actions{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
+.agua-actions .btn{flex:1;min-width:80px}
 </style>
 </head>
 <body>
@@ -117,7 +123,9 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
   <!-- ============ PÁGINA INICIAL ============ -->
   <section id="screen-home" class="screen active">
     <h1 class="page-title">PÁGINA INICIAL</h1>
-    <div class="card">
+    
+    <!-- OCULTADO: Conjunto superior (Coração, Medir agora, Último Registro, Histórico) -->
+    <div class="card" style="display:none;">
       <div class="hero-top">
         <div class="heart">❤️</div>
         <button class="btn primary big" onclick="openQuick()">Medir agora <span class="chev">›</span></button>
@@ -127,6 +135,7 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
         <button class="link" onclick="goHist()">Histórico <span class="chev">›</span></button>
       </div>
     </div>
+    
     <br/>
     <div class="grid">
       <div class="card metric">
@@ -158,7 +167,7 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
         <button class="btn primary block" onclick="openForm('fc')">Registro</button>
       </div>
 
-      <!-- ============ NOVO: MEDIDOR DE ALTURA ============ -->
+      <!-- ALTURA -->
       <div class="card metric wide">
         <div class="m-icon" style="background:rgba(74,222,128,.15)">📏</div>
         <div class="w-mid">
@@ -167,9 +176,24 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
         </div>
         <button class="btn primary" onclick="openForm('altura')">Registro</button>
       </div>
+
+      <!-- ÁGUA (diário) -->
+      <div class="card metric wide agua-card">
+        <div class="m-icon" style="background:rgba(96,165,250,.18)">💧</div>
+        <div class="w-mid" style="flex:2">
+          <div class="m-title">Água</div>
+          <div class="m-value"><span id="v-agua">--</span><small>ml</small></div>
+          <div class="agua-meta"><span>Meta: <span id="agua-meta-text">2000</span> ml</span><span id="agua-badge"></span></div>
+          <div class="agua-progress-wrap"><div class="agua-progress" id="agua-progress" style="width:0%"></div></div>
+          <div class="agua-actions">
+            <button class="btn primary" onclick="addAgua(250)">+ Copo (250ml)</button>
+            <button class="btn ghost sm" onclick="openAguaModal()">⚙️</button>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- ============ NOVO: IMC & PESO IDEAL ============ -->
+    <!-- IMC -->
     <div class="card imc-card">
       <div class="imc-head">📐 IMC & Peso Ideal</div>
       <div class="imc-grid">
@@ -215,7 +239,7 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
 /* ================= DADOS ================= */
 const KEY='minhaSaudeDB_v1';
 let db=loadDB();
-function loadDB(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d){d.peso=d.peso||[];d.pressao=d.pressao||[];d.acucar=d.acucar||[];d.fc=d.fc||[];d.altura=d.altura||[];return d;}}catch(e){}return{peso:[],pressao:[],acucar:[],fc:[],altura:[]};}
+function loadDB(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d){d.peso=d.peso||[];d.pressao=d.pressao||[];d.acucar=d.acucar||[];d.fc=d.fc||[];d.altura=d.altura||[];d.agua=d.agua||[];d.metaAgua=d.metaAgua||2000;return d;}}catch(e){}return{peso:[],pressao:[],acucar:[],fc:[],altura:[],agua:[],metaAgua:2000};}
 function saveDB(){localStorage.setItem(KEY,JSON.stringify(db));}
 const uid=()=>Date.now().toString(36)+Math.floor(Math.random()*1e6).toString(36);
 const q=id=>document.getElementById(id);
@@ -223,6 +247,8 @@ const last=t=>db[t].length?[...db[t]].sort((a,b)=>b.d-a.d)[0]:null;
 const fmt1=v=>(Math.round(v*10)/10).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1});
 const fmtTime=t=>{const d=new Date(t);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');};
 const fmtDate=t=>{const d=new Date(t);return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()+' '+fmtTime(t);};
+const fmtDateShort=t=>{const d=new Date(t);return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();};
+const hoje=()=>{const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();};
 
 /* ============ CLASSIFICAÇÕES ============ */
 const COR={green:['#4ade80','rgba(74,222,128,.16)'],yellow:['#fde047','rgba(253,224,71,.16)'],orange:['#fb923c','rgba(251,146,60,.16)'],red:['#f87171','rgba(248,113,113,.16)'],blue:['#60a5fa','rgba(96,165,250,.16)'],gray:['#9aa3c0','rgba(154,163,192,.16)']};
@@ -230,13 +256,57 @@ const badgeHTML=(t,c)=>`<span class="badge" style="color:${(COR[c]||COR.gray)[0]
 function classPressao(s,d){if(s>=180||d>=120)return['Crise hipertensiva','red'];if(s>=140||d>=90)return['Hipertensão 2','red'];if(s>=130||d>=80)return['Hipertensão 1','orange'];if(s>=120)return['Elevada','yellow'];if(s<90||d<60)return['Pressão baixa','blue'];return['Normal','green'];}
 function classAcucar(v,ctx){if(v<70)return['Hipoglicemia','red'];if(ctx==='Jejum'){if(v<100)return['Normal','green'];if(v<126)return['Pré-diabetes','yellow'];return['Alto','red'];}if(v<140)return['Normal','green'];if(v<200)return['Elevado','yellow'];return['Alto','red'];}
 function classFC(v){if(v<50)return['Bradicardia','blue'];if(v<=100)return['Normal','green'];if(v<=120)return['Elevada','yellow'];return['Taquicardia','red'];}
-
-/* ============ NOVO: CLASSIFICAÇÃO DO IMC ============ */
 function classIMC(v){if(v<16)return['Baixo peso extremo','red'];if(v<17)return['Baixo peso grave','red'];if(v<18.5)return['Baixo peso','orange'];if(v<25)return['Normal','green'];if(v<30)return['Sobrepeso','yellow'];if(v<35)return['Obesidade grau I','orange'];if(v<40)return['Obesidade grau II','red'];return['Obesidade grau III','red'];}
 const IMC_ROWS=[['Baixo peso extremo','< 16','red'],['Baixo peso grave','16 – 17','red'],['Baixo peso','17 – 18,5','orange'],['Normal','18,5 – 25','green'],['Sobrepeso','25 – 30','yellow'],['Obesidade grau I','30 – 35','orange'],['Obesidade grau II','35 – 40','red'],['Obesidade grau III','> 40','red']];
 function imcRowIndex(v){if(v<16)return 0;if(v<17)return 1;if(v<18.5)return 2;if(v<25)return 3;if(v<30)return 4;if(v<35)return 5;if(v<40)return 6;return 7;}
 function renderImcTable(imc){const act=(imc==null||isNaN(imc))?-1:imcRowIndex(imc);
   q('imcTable').innerHTML=IMC_ROWS.map((r,i)=>`<div class="imc-row${i===act?' active':''}" style="color:${COR[r[2]][0]}">${r[0]}<span>${r[1]}</span></div>`).join('');}
+
+/* ================= ÁGUA ================= */
+function getConsumoAguaHoje(){
+  const inicio=hoje();
+  return db.agua.filter(r=>r.d>=inicio).reduce((acc,r)=>acc+r.quantidade,0);
+}
+function renderAgua(){
+  const meta=db.metaAgua||2000;
+  const consumo=getConsumoAguaHoje();
+  q('v-agua').textContent=fmt1(consumo);
+  q('agua-meta-text').textContent=meta;
+  const pct=Math.min(100,(consumo/meta)*100);
+  q('agua-progress').style.width=pct+'%';
+  const badge=consumo>=meta?badgeHTML('🥤 Meta batida!','green'):consumo>0?badgeHTML(consumo+'ml','blue'):'';
+  q('agua-badge').innerHTML=badge;
+}
+function addAgua(quantidade){
+  if(!quantidade||quantidade<=0)return;
+  db.agua.push({id:uid(),quantidade,d:Date.now()});
+  saveDB();
+  renderAll();
+  toast('💧 '+quantidade+'ml adicionado');
+}
+function openAguaModal(){
+  const meta=db.metaAgua||2000;
+  q('modalBox').innerHTML=`
+    <div class="m-head"><span class="m-ico">💧</span><h2>Água</h2><button class="x" onclick="closeModal()">✕</button></div>
+    <div class="field"><label>Quantidade (ml)</label><input id="f-agua-qtd" type="number" inputmode="decimal" step="50" min="50" value="250" placeholder="Ex.: 250"></div>
+    <div class="field"><label>Meta diária (ml)</label><input id="f-agua-meta" type="number" inputmode="numeric" step="100" min="500" value="${meta}" placeholder="Ex.: 2000"></div>
+    <div class="m-foot">
+      <button class="btn ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn primary" onclick="saveAguaModal()">Salvar</button>
+    </div>
+  `;
+  q('overlay').classList.add('show');
+  setTimeout(()=>{const el=q('f-agua-qtd');if(el)el.focus();},300);
+}
+function saveAguaModal(){
+  const qtd=parseFloat(q('f-agua-qtd').value.replace(',','.'));
+  const meta=parseFloat(q('f-agua-meta').value.replace(',','.'));
+  if(isNaN(qtd)||qtd<=0)return toast('⚠️ Quantidade inválida');
+  if(!isNaN(meta)&&meta>0)db.metaAgua=meta;
+  addAgua(qtd);
+  closeModal();
+  renderAll();
+}
 
 /* ================= HOME ================= */
 function renderHome(){
@@ -254,7 +324,7 @@ function renderHome(){
   q('b-acucar').innerHTML=a?badgeHTML(...classAcucar(a.v,a.ctx)):'';
   q('b-fc').innerHTML=f?badgeHTML(...classFC(f.v)):'';
 
-  /* ---- NOVO: cálculo IMC + Peso Ideal ---- */
+  // IMC
   if(p&&h){
     const hm=h.v/100, imc=p.v/(hm*hm);
     q('v-imc').textContent=fmt1(imc);
@@ -277,27 +347,91 @@ function renderHome(){
     q('imcHint').style.display='block';
   }
 
-  const all=[...db.peso,...db.pressao,...db.acucar,...db.fc,...db.altura];
+  // Último registro geral
+  const all=[...db.peso,...db.pressao,...db.acucar,...db.fc,...db.altura,...db.agua];
   q('lastTime').textContent=all.length?fmtTime(Math.max(...all.map(r=>r.d))):'--:--';
+
+  // Água
+  renderAgua();
 }
 
 /* ================ HISTÓRICO ================ */
-const TABS=[{id:'peso',name:'Peso',icon:'⚖️'},{id:'pressao',name:'Pressão',icon:'🩺'},{id:'acucar',name:'Açúcar',icon:'🩸'},{id:'fc',name:'Coração',icon:'❤️'},{id:'altura',name:'Altura',icon:'📏'}];
+const TABS=[
+  {id:'peso',name:'Peso',icon:'⚖️'},
+  {id:'pressao',name:'Pressão',icon:'🩺'},
+  {id:'acucar',name:'Açúcar',icon:'🩸'},
+  {id:'fc',name:'Coração',icon:'❤️'},
+  {id:'altura',name:'Altura',icon:'📏'},
+  {id:'agua',name:'Água',icon:'💧'}
+];
 let curTab='peso';
 function setTab(t){curTab=t;renderHistory();}
+
+/* ---- Agrupamento diário para água ---- */
+function agruparAguaPorDia(registros){
+  const mapa={};
+  registros.forEach(r=>{
+    const dataInicio = new Date(r.d);
+    dataInicio.setHours(0,0,0,0);
+    const chave = dataInicio.getTime();
+    if(!mapa[chave]) mapa[chave]={data:chave, total:0, ids:[]};
+    mapa[chave].total += r.quantidade;
+    mapa[chave].ids.push(r.id);
+  });
+  return Object.values(mapa).sort((a,b)=>b.data-a.data);
+}
+
 function renderHistory(){
   q('tabs').innerHTML=TABS.map(t=>`<button class="${t.id===curTab?'active':''}" onclick="setTab('${t.id}')">${t.icon} ${t.name}</button>`).join('');
-  const recs=[...db[curTab]].sort((a,b)=>b.d-a.d);
+  let recs=[...db[curTab]].sort((a,b)=>b.d-a.d);
+  let listItems=[];
+  let statsData=[];
+
+  if(curTab==='agua'){
+    // Agrupa por dia
+    const dias = agruparAguaPorDia(db.agua);
+    if(dias.length){
+      const totais = dias.map(d=>d.total);
+      const min=Math.min(...totais), max=Math.max(...totais), med=totais.reduce((s,v)=>s+v,0)/totais.length;
+      q('stats').innerHTML=`<div class="stat"><b>${dias.length}</b><span>Dias</span></div><div class="stat"><b>${fmt1(totais[0])} ml</b><span>Último dia</span></div><div class="stat"><b>${fmt1(med)}</b><span>Média dia</span></div><div class="stat"><b>${fmt1(min)}–${fmt1(max)}</b><span>Faixa</span></div>`;
+      // Monta lista de dias
+      listItems = dias.map(d=>{
+        const dataStr = fmtDateShort(d.data);
+        return `<div class="h-item"><div><div class="h-val">${fmt1(d.total)} <small>ml</small></div><div class="h-date">${dataStr}</div></div><div class="h-right">${badgeHTML('💧','blue')}<button class="del" onclick="delDiaAgua('${d.data}')">🗑️</button></div></div>`;
+      });
+      // Para o gráfico, usamos os totais diários (ordenados cronologicamente)
+      const diasAsc = dias.slice().reverse(); // mais antigo primeiro
+      const pts = diasAsc.map(d=>({x:d.data, y:d.total}));
+      drawChartAgua(pts);
+    }else{
+      q('stats').innerHTML='';
+      listItems=[`<div class="empty">Nenhum registro de água ainda.<br>Toque em <b>+</b> para adicionar.</div>`];
+      drawChartAgua([]);
+    }
+    q('list').innerHTML=listItems.join('');
+    // O drawChart normal será substituído pelo específico para água
+    return;
+  }
+
+  // --- Para outros tipos (não água) ---
   const fmtV=v=>(curTab==='peso'||curTab==='acucar'||curTab==='altura')?fmt1(v):Math.round(v);
   if(recs.length){
-    const vals=curTab==='pressao'?recs.map(r=>r.sys):recs.map(r=>r.v);
+    let vals;
+    if(curTab==='pressao') vals=recs.map(r=>r.sys);
+    else vals=recs.map(r=>r.v);
     const min=Math.min(...vals),max=Math.max(...vals),med=vals.reduce((s,v)=>s+v,0)/vals.length;
-    const lastTxt=curTab==='pressao'?recs[0].sys+'/'+recs[0].dia:(curTab==='fc'?recs[0].v:fmt1(recs[0].v));
+    let lastTxt;
+    if(curTab==='pressao') lastTxt=recs[0].sys+'/'+recs[0].dia;
+    else if(curTab==='fc') lastTxt=recs[0].v;
+    else lastTxt=fmt1(recs[0].v);
     q('stats').innerHTML=`<div class="stat"><b>${recs.length}</b><span>Registros</span></div><div class="stat"><b>${lastTxt}</b><span>Último</span></div><div class="stat"><b>${fmtV(med)}</b><span>Média</span></div><div class="stat"><b>${fmtV(min)}–${fmtV(max)}</b><span>Faixa</span></div>`;
   }else q('stats').innerHTML='';
+  // Lista padrão
+  listItems = recs.map(itemHTML);
+  q('list').innerHTML=listItems.length?listItems.join(''):`<div class="empty">Nenhum registro ainda.<br>Toque em <b>+</b> para adicionar.</div>`;
   drawChart(recs);
-  q('list').innerHTML=recs.length?recs.map(itemHTML).join(''):`<div class="empty">Nenhum registro ainda.<br>Toque em <b>+</b> para adicionar.</div>`;
 }
+
 function itemHTML(r){
   let val='',bad='';
   if(curTab==='peso')val=`${fmt1(r.v)} <small>kg</small>`;
@@ -307,10 +441,40 @@ function itemHTML(r){
   if(curTab==='altura')val=`${fmt1(r.v)} <small>cm</small>`;
   return `<div class="h-item"><div><div class="h-val">${val}</div><div class="h-date">${fmtDate(r.d)}${r.ctx?' · '+r.ctx:''}</div></div><div class="h-right">${bad}<button class="del" onclick="delRec('${r.id}')">🗑️</button></div></div>`;
 }
-function delRec(id){if(!confirm('Excluir este registro?'))return;db[curTab]=db[curTab].filter(r=>r.id!==id);saveDB();renderAll();toast('Registro excluído');}
-function clearAll(){if(!confirm('Apagar TODOS os registros de '+TABS.find(t=>t.id===curTab).name+'?'))return;db[curTab]=[];saveDB();renderAll();toast('Histórico limpo');}
 
-/* ================= GRÁFICO ================= */
+function delRec(id){if(!confirm('Excluir este registro?'))return;db[curTab]=db[curTab].filter(r=>r.id!==id);saveDB();renderAll();toast('Registro excluído');}
+
+// Deletar um dia inteiro de água
+function delDiaAgua(dataTimestamp){
+  if(!confirm('Excluir todos os registros de água deste dia?'))return;
+  const inicio = new Date(dataTimestamp);
+  inicio.setHours(0,0,0,0);
+  const fim = new Date(inicio);
+  fim.setDate(fim.getDate()+1);
+  db.agua = db.agua.filter(r=>!(r.d>=inicio.getTime() && r.d<fim.getTime()));
+  saveDB();
+  renderAll();
+  toast('Dia excluído');
+}
+
+function clearAll(){
+  if(curTab==='agua'){
+    if(!confirm('Apagar TODOS os registros de água (todos os dias)?'))return;
+    db.agua=[];
+    saveDB();
+    renderAll();
+    toast('Histórico de água limpo');
+    return;
+  }
+  if(!confirm('Apagar TODOS os registros de '+TABS.find(t=>t.id===curTab).name+'?'))return;
+  db[curTab]=[];
+  saveDB();
+  renderAll();
+  toast('Histórico limpo');
+}
+
+/* ================= GRÁFICOS ================= */
+// Gráfico padrão (para os outros tipos)
 function drawChart(recs){
   const cv=q('chart'),ctx=cv.getContext('2d'),dpr=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;
   cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
@@ -336,6 +500,26 @@ function drawChart(recs){
     s.pts.forEach(p=>{ctx.fillStyle=s.cor;ctx.beginPath();ctx.arc(X(p.x),Y(p.y),3.2,0,7);ctx.fill();});});
 }
 
+// Gráfico específico para água (usando totais diários)
+function drawChartAgua(dias){
+  const cv=q('chart'),ctx=cv.getContext('2d'),dpr=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;
+  cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
+  if(dias.length<2){ctx.fillStyle='#9aa3c0';ctx.font='600 13px sans-serif';ctx.textAlign='center';ctx.fillText('Registre 2+ dias para ver o gráfico',W/2,H/2);return;}
+  const pts=dias.slice(-12);
+  const allY=pts.map(p=>p.y);let minY=Math.min(...allY),maxY=Math.max(...allY);
+  if(minY===maxY){minY-=5;maxY+=5;}const pad=(maxY-minY)*.2;minY-=pad;maxY+=pad;
+  const minX=pts[0].x,maxX=pts[pts.length-1].x,L=38,R=12,T=12,B=24;
+  const X=x=>minX===maxX?L+(W-L-R)/2:L+(x-minX)/(maxX-minX)*(W-L-R);
+  const Y=y=>T+(maxY-y)/(maxY-minY)*(H-T-B);
+  ctx.strokeStyle='rgba(255,255,255,.08)';ctx.fillStyle='#9aa3c0';ctx.font='600 10px sans-serif';ctx.lineWidth=1;ctx.textAlign='left';
+  for(let i=0;i<=3;i++){const yv=maxY-(maxY-minY)*i/3,yy=Y(yv);ctx.beginPath();ctx.moveTo(L,yy);ctx.lineTo(W-R,yy);ctx.stroke();ctx.fillText(Math.round(yv),6,yy+3);}
+  const dl=d=>{const dt=new Date(d);return String(dt.getDate()).padStart(2,'0')+'/'+String(dt.getMonth()+1).padStart(2,'0');};
+  ctx.textAlign='center';ctx.fillText(dl(minX),X(minX),H-6);ctx.fillText(dl(maxX),X(maxX),H-6);
+  ctx.strokeStyle='#60a5fa';ctx.lineWidth=2.5;ctx.lineJoin='round';ctx.beginPath();
+  pts.forEach((p,i)=>i?ctx.lineTo(X(p.x),Y(p.y)):ctx.moveTo(X(p.x),Y(p.y)));ctx.stroke();
+  pts.forEach(p=>{ctx.fillStyle='#60a5fa';ctx.beginPath();ctx.arc(X(p.x),Y(p.y),3.2,0,7);ctx.fill();});
+}
+
 /* ============= FORMULÁRIOS ============= */
 const FORMS={
  peso:{t:'Registrar Peso',i:'⚖️',h:`<div class="field"><label>Peso (kg)</label><input id="f-v" type="number" inputmode="decimal" step="0.1" min="1" max="400" placeholder="Ex.: 72.5" autocomplete="off"></div>`},
@@ -348,7 +532,7 @@ let curForm=null;
 function openForm(t){curForm=t;const f=FORMS[t];
   q('modalBox').innerHTML=`<div class="m-head"><span class="m-ico">${f.i}</span><h2>${f.t}</h2><button class="x" onclick="closeModal()">✕</button></div>${f.h}<div class="m-foot"><button class="btn ghost" onclick="closeModal()">Cancelar</button><button class="btn primary" onclick="saveForm()">💾 Salvar</button></div>`;
   q('overlay').classList.add('show');setTimeout(()=>{const el=document.querySelector('#modalBox input');if(el)el.focus();},300);}
-function openQuick(){q('modalBox').innerHTML=`<div class="m-head"><span class="m-ico">💙</span><h2>O que registrar?</h2><button class="x" onclick="closeModal()">✕</button></div><div class="quick-grid"><button class="quick-btn" onclick="openForm('peso')"><span class="qi">⚖️</span>Peso</button><button class="quick-btn" onclick="openForm('pressao')"><span class="qi">🩺</span>Pressão</button><button class="quick-btn" onclick="openForm('acucar')"><span class="qi">🩸</span>Açúcar</button><button class="quick-btn" onclick="openForm('fc')"><span class="qi">❤️</span>Coração</button><button class="quick-btn" onclick="openForm('altura')"><span class="qi">📏</span>Altura</button></div>`;q('overlay').classList.add('show');}
+function openQuick(){q('modalBox').innerHTML=`<div class="m-head"><span class="m-ico">💙</span><h2>O que registrar?</h2><button class="x" onclick="closeModal()">✕</button></div><div class="quick-grid"><button class="quick-btn" onclick="openForm('peso')"><span class="qi">⚖️</span>Peso</button><button class="quick-btn" onclick="openForm('pressao')"><span class="qi">🩺</span>Pressão</button><button class="quick-btn" onclick="openForm('acucar')"><span class="qi">🩸</span>Açúcar</button><button class="quick-btn" onclick="openForm('fc')"><span class="qi">❤️</span>Coração</button><button class="quick-btn" onclick="openForm('altura')"><span class="qi">📏</span>Altura</button><button class="quick-btn" onclick="openAguaModal()"><span class="qi">💧</span>Água</button></div>`;q('overlay').classList.add('show');}
 function closeModal(){q('overlay').classList.remove('show');curForm=null;}
 const gv=id=>{const el=q(id);return el?el.value.trim():'';};
 function saveForm(){const t=curForm;if(!t)return;
@@ -366,17 +550,45 @@ function goHome(){show('home');}
 function goHist(){show('hist');renderHistory();}
 function show(s){q('screen-home').classList.toggle('active',s==='home');q('screen-hist').classList.toggle('active',s==='hist');q('nav-home').classList.toggle('active',s==='home');q('nav-hist').classList.toggle('active',s==='hist');window.scrollTo({top:0});}
 let toastTimer;function toast(m){const el=q('toast');el.textContent=m;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2200);}
-function exportCSV(){const recs=[...db[curTab]].sort((a,b)=>a.d-b.d);if(!recs.length)return toast('Nada para exportar');let rows=[];
+function exportCSV(){
+  if(curTab==='agua'){
+    const dias = agruparAguaPorDia(db.agua).sort((a,b)=>a.data-b.data);
+    if(!dias.length)return toast('Nada para exportar');
+    let rows=[['Data','Total (ml)']];
+    dias.forEach(d=>rows.push([fmtDateShort(d.data),d.total]));
+    const csv='\uFEFF'+rows.map(r=>r.join(';')).join('\n');
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+    a.download='historico_agua_diario.csv';
+    document.body.appendChild(a);a.click();a.remove();
+    toast('📥 CSV exportado');
+    return;
+  }
+  const recs=[...db[curTab]].sort((a,b)=>a.d-b.d);
+  if(!recs.length)return toast('Nada para exportar');
+  let rows=[];
   if(curTab==='peso'){rows.push(['Data','Peso (kg)']);recs.forEach(r=>rows.push([fmtDate(r.d),String(r.v).replace('.',',')]));}
-  if(curTab==='pressao'){rows.push(['Data','Sistólica','Diastólica','Pulso']);recs.forEach(r=>rows.push([fmtDate(r.d),r.sys,r.dia,r.pul??'']));}
-  if(curTab==='acucar'){rows.push(['Data','Glicose (mg/dL)','Contexto']);recs.forEach(r=>rows.push([fmtDate(r.d),r.v,r.ctx||'']));}
-  if(curTab==='fc'){rows.push(['Data','BPM','Contexto']);recs.forEach(r=>rows.push([fmtDate(r.d),r.v,r.ctx||'']));}
-  if(curTab==='altura'){rows.push(['Data','Altura (cm)']);recs.forEach(r=>rows.push([fmtDate(r.d),String(r.v).replace('.',',')]));}
-  const csv='\uFEFF'+rows.map(r=>r.join(';')).join('\n');const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='historico_'+curTab+'.csv';
-  document.body.appendChild(a);a.click();a.remove();toast('📥 CSV exportado');}
+  else if(curTab==='pressao'){rows.push(['Data','Sistólica','Diastólica','Pulso']);recs.forEach(r=>rows.push([fmtDate(r.d),r.sys,r.dia,r.pul??'']));}
+  else if(curTab==='acucar'){rows.push(['Data','Glicose (mg/dL)','Contexto']);recs.forEach(r=>rows.push([fmtDate(r.d),r.v,r.ctx||'']));}
+  else if(curTab==='fc'){rows.push(['Data','BPM','Contexto']);recs.forEach(r=>rows.push([fmtDate(r.d),r.v,r.ctx||'']));}
+  else if(curTab==='altura'){rows.push(['Data','Altura (cm)']);recs.forEach(r=>rows.push([fmtDate(r.d),String(r.v).replace('.',',')]));}
+  const csv='\uFEFF'+rows.map(r=>r.join(';')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  a.download='historico_'+curTab+'.csv';
+  document.body.appendChild(a);a.click();a.remove();
+  toast('📥 CSV exportado');
+}
 function renderAll(){renderHome();renderHistory();}
-window.addEventListener('resize',()=>drawChart([...db[curTab]].sort((a,b)=>b.d-a.d)));
+window.addEventListener('resize',()=>{
+  if(curTab==='agua'){
+    const dias = agruparAguaPorDia(db.agua);
+    const pts = dias.slice().reverse().map(d=>({x:d.data, y:d.total}));
+    drawChartAgua(pts);
+  }else{
+    drawChart([...db[curTab]].sort((a,b)=>b.d-a.d));
+  }
+});
 renderAll();
 </script>
 </body>
