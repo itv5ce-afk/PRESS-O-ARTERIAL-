@@ -63,7 +63,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .nav-btn{background:none;border:none;color:var(--muted);font-size:11px;font-weight:800;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;width:70px}
 .nav-btn .ico{font-size:20px}
 .nav-btn.active{color:#fff}
-.fab{width:58px;height:58px;border-radius:50%;background:var(--blue);border:none;color:#fff;font-size:28px;font-weight:800;margin-top:-34px;box-shadow:0 8px 20px rgba(77,124,243,.45);cursor:pointer}
+.fab{width:58px;height:58px;border-radius:50%;background:var(--blue);border:none;color:#fff;font-size:28px;font-weight:800;margin-top:-34px;box-shadow:0 8px 20px rgba(77,124,243,.45);cursor:pointer;display:none}
 #overlay{position:fixed;inset:0;background:rgba(10,12,24,.6);display:none;align-items:flex-end;justify-content:center;z-index:50;backdrop-filter:blur(2px)}
 #overlay.show{display:flex}
 .modal{background:var(--card);width:100%;max-width:520px;border-radius:26px 26px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));animation:up .28s ease}
@@ -115,6 +115,52 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
 .agua-meta{font-size:13px;color:var(--muted);font-weight:700;display:flex;justify-content:space-between;width:100%}
 .agua-actions{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
 .agua-actions .btn{flex:1;min-width:80px}
+
+/* ============ CRONÓMETRO DE EXERCÍCIOS ============ */
+.ex-top-banner{background:#FFD700;border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+.ex-banner-title{background:#2C3E50;color:#fff;padding:16px;text-align:center;font-size:20px;font-weight:800;text-transform:uppercase;letter-spacing:1px}
+.ex-banner-sub{background:linear-gradient(90deg,#FF0000 0%,#FF8C00 100%);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px;font-size:16px;font-weight:800}
+.ex-no-equip{width:28px;height:28px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#FF0000;font-size:16px}
+.ex-image{width:100%;height:200px;background:var(--card2);border-radius:var(--radius);overflow:hidden;margin-bottom:16px;display:flex;align-items:center;justify-content:center}
+.ex-image img{width:100%;height:100%;object-fit:cover}
+.ex-placeholder{color:var(--muted);text-align:center;font-size:50px}
+.ex-workout-list{margin-bottom:16px}
+.ex-card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.ex-card-content{flex:1}
+.ex-card-title{font-size:16px;font-weight:800;margin-bottom:4px;text-transform:uppercase}
+.ex-card-details{font-size:13px;color:var(--muted);line-height:1.4}
+.ex-card-actions{display:flex;gap:8px}
+.ex-btn{width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:transform .12s}
+.ex-btn:active{transform:scale(.95)}
+.ex-btn.play{background:#2ed573;color:#fff}
+.ex-btn.del{background:rgba(248,113,113,.15);color:#f87171}
+.ex-create-btn{background:var(--blue);color:#fff;padding:16px;text-align:center;border-radius:16px;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 4px 15px rgba(77,124,243,.4)}
+.ex-empty{text-align:center;color:var(--muted);padding:40px 20px}
+
+/* Timer Styles */
+.ex-timer-screen{text-align:center}
+.ex-timer-info{background:var(--card);border-radius:16px;padding:20px;margin-bottom:20px}
+.ex-timer-name{font-size:18px;font-weight:800;margin-bottom:8px}
+.ex-timer-reps{font-size:24px;font-weight:800;color:var(--blue)}
+.ex-timer-circle{width:220px;height:220px;border-radius:50%;background:var(--card);margin:0 auto 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.ex-timer-circle::before{content:'';position:absolute;inset:0;border-radius:50%;background:conic-gradient(var(--blue) var(--progress),var(--card2) 0);z-index:0}
+.ex-timer-inner{position:relative;z-index:1;background:var(--card);width:200px;height:200px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ex-timer-time{font-size:42px;font-weight:800;color:var(--blue);line-height:1}
+.ex-timer-label{font-size:12px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:1px}
+.ex-timer-phase{font-size:20px;font-weight:800;margin-bottom:16px;color:#fff;text-transform:uppercase}
+.ex-badges{display:flex;gap:8px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+.ex-badge{padding:6px 12px;border-radius:999px;font-size:12px;font-weight:800}
+.ex-badge.ex{background:var(--blue);color:#fff}
+.ex-badge.rest{background:#fb923c;color:#fff}
+.ex-config-card{background:var(--card);border-radius:var(--radius);padding:18px;margin-bottom:16px}
+.ex-config-title{font-size:18px;font-weight:800;margin-bottom:16px;color:var(--blue)}
+.ex-section-title{font-size:14px;font-weight:800;color:var(--muted);margin:16px 0 10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--card2);padding-bottom:4px}
+.ex-radio-group,.ex-check-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.ex-radio-opt,.ex-check-opt{flex:1;min-width:80px}
+.ex-radio-opt input,.ex-check-opt input{display:none}
+.ex-radio-opt label,.ex-check-opt label{display:block;padding:10px;text-align:center;background:var(--card2);border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+.ex-radio-opt input:checked+label,.ex-check-opt input:checked+label{background:var(--blue);color:#fff}
+.ex-time-inputs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 </style>
 </head>
 <body>
@@ -124,7 +170,6 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
   <section id="screen-home" class="screen active">
     <h1 class="page-title">PÁGINA INICIAL</h1>
     
-    <!-- OCULTADO: Conjunto superior (Coração, Medir agora, Último Registro, Histórico) -->
     <div class="card" style="display:none;">
       <div class="hero-top">
         <div class="heart">❤️</div>
@@ -223,6 +268,154 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
       <button class="btn danger sm" onclick="clearAll()">🗑 Limpar tudo</button>
     </div>
   </section>
+
+  <!-- ============ CRONÓMETRO DE EXERCÍCIOS ============ -->
+  <section id="screen-exercicios" class="screen">
+    <h1 class="page-title">CRONÓMETRO</h1>
+    
+    <!-- Banner Superior -->
+    <div class="ex-top-banner">
+      <div class="ex-banner-title">Cronómetro para Exercícios</div>
+      <div class="ex-banner-sub">
+        <div class="ex-no-equip">🚫</div>
+        ITV Saude
+      </div>
+    </div>
+
+    <!-- Imagem do Exercício -->
+    <div class="ex-image">
+      <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop" alt="Exercício" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+      <div class="ex-placeholder" style="display:none">🏋️</div>
+    </div>
+
+    <!-- Lista de Treinos -->
+    <div id="exWorkoutList" class="ex-workout-list">
+      <div class="ex-empty">Nenhum treino salvo. Crie seu primeiro treino!</div>
+    </div>
+    
+    <div class="ex-create-btn" onclick="showExConfig()">
+      + Criar Novo Treino
+    </div>
+  </section>
+
+  <!-- ============ CONFIGURAÇÃO DE EXERCÍCIOS ============ -->
+  <section id="screen-ex-config" class="screen">
+    <h1 class="page-title">CONFIGURAR TREINO</h1>
+    
+    <div class="ex-config-card">
+      <div class="ex-config-title">⚙️ Configuração do Treino</div>
+      
+      <div class="field">
+        <label>Nome do Treino</label>
+        <input type="text" id="exWorkoutName" placeholder="Ex: Treino Full Body">
+      </div>
+
+      <div class="ex-section-title">Tipo de Exercício</div>
+      
+      <div class="field">
+        <label>Ritmo</label>
+        <div class="ex-radio-group">
+          <div class="ex-radio-opt">
+            <input type="radio" name="exRitmo" id="exRitmoDevega" value="devega">
+            <label for="exRitmoDevega">Devega</label>
+          </div>
+          <div class="ex-radio-opt">
+            <input type="radio" name="exRitmo" id="exRitmoEstavel" value="estavel" checked>
+            <label for="exRitmoEstavel">Estável</label>
+          </div>
+          <div class="ex-radio-opt">
+            <input type="radio" name="exRitmo" id="exRitmoRapido" value="rapido">
+            <label for="exRitmoRapido">Rápido</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Tipo</label>
+        <div class="ex-radio-group">
+          <div class="ex-radio-opt">
+            <input type="radio" name="exTipo" id="exTipoDistancia" value="distancia">
+            <label for="exTipoDistancia">Distância</label>
+          </div>
+          <div class="ex-radio-opt">
+            <input type="radio" name="exTipo" id="exTipoTempo" value="tempo" checked>
+            <label for="exTipoTempo">Tempo</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="field" id="exDistanciaGroup" style="display:none">
+        <label>Distância (metros)</label>
+        <input type="number" id="exDistancia" placeholder="Ex: 100">
+      </div>
+
+      <div class="field" id="exTempoGroup">
+        <label>Tempo (segundos)</label>
+        <input type="number" id="exTempoExercicio" placeholder="Ex: 30">
+      </div>
+
+      <div class="field">
+        <label>Repetições</label>
+        <input type="number" id="exRepeticoes" placeholder="Ex: 10">
+      </div>
+
+      <div class="ex-section-title">Intervalos</div>
+      
+      <div class="field">
+        <label>Tempo de Descanso (segundos)</label>
+        <input type="number" id="exTempoDescanso" placeholder="Ex: 15" value="15">
+      </div>
+
+      <div class="ex-check-group">
+        <div class="ex-check-opt">
+          <input type="checkbox" id="exAquecimento" value="sim">
+          <label for="exAquecimento">Incluir Aquecimento</label>
+        </div>
+        <div class="ex-check-opt">
+          <input type="checkbox" id="exDesaceleracao" value="sim">
+          <label for="exDesaceleracao">Incluir Desaceleração</label>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;display:flex;gap:10px">
+        <button class="btn primary block" onclick="saveExWorkout()">💾 SALVAR TREINO</button>
+        <button class="btn ghost" onclick="show('home')">← Voltar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TIMER DE EXERCÍCIOS ============ -->
+  <section id="screen-ex-timer" class="screen ex-timer-screen">
+    <h1 class="page-title">TREINO</h1>
+    
+    <div class="ex-timer-info">
+      <div class="ex-timer-name" id="exDisplayWorkoutName">Nome do Treino</div>
+      <div class="ex-timer-reps">
+        <span id="exCurrentRep">1</span> / <span id="exTotalReps">10</span> repetições
+      </div>
+    </div>
+
+    <div class="ex-timer-phase" id="exTimerPhase">PREPARAR</div>
+    
+    <div class="ex-timer-circle" id="exTimerCircle" style="--progress:0deg">
+      <div class="ex-timer-inner">
+        <div class="ex-timer-time" id="exTimerTime">00:00</div>
+        <div class="ex-timer-label" id="exTimerLabel">Segundos</div>
+      </div>
+    </div>
+
+    <div class="ex-badges">
+      <span class="ex-badge ex">Exercício: <span id="exDisplayTempoExercicio">30</span>s</span>
+      <span class="ex-badge rest">Descanso: <span id="exDisplayTempoDescanso">15</span>s</span>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button class="btn primary big" id="exBtnStartPause" onclick="toggleExTimer()">▶ INICIAR</button>
+      <button class="btn ghost" onclick="resetExTimer()">🔄 Reiniciar</button>
+      <button class="btn danger" onclick="show('exercicios')">← Voltar</button>
+    </div>
+  </section>
+
 </div>
 
 <!-- ============ NAVEGAÇÃO INFERIOR ============ -->
@@ -230,6 +423,7 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
   <button id="nav-home" class="nav-btn active" onclick="goHome()"><span class="ico">🏠</span>Início</button>
   <button class="fab" onclick="openQuick()">+</button>
   <button id="nav-hist" class="nav-btn" onclick="goHist()"><span class="ico">📊</span>Histórico</button>
+  <button id="nav-ex" class="nav-btn" onclick="goExercicios()"><span class="ico">⏱️</span>Exercícios</button>
 </nav>
 
 <div id="overlay" onclick="if(event.target===this)closeModal()"><div id="modalBox" class="modal"></div></div>
@@ -239,7 +433,7 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
 /* ================= DADOS ================= */
 const KEY='minhaSaudeDB_v1';
 let db=loadDB();
-function loadDB(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d){d.peso=d.peso||[];d.pressao=d.pressao||[];d.acucar=d.acucar||[];d.fc=d.fc||[];d.altura=d.altura||[];d.agua=d.agua||[];d.metaAgua=d.metaAgua||2000;return d;}}catch(e){}return{peso:[],pressao:[],acucar:[],fc:[],altura:[],agua:[],metaAgua:2000};}
+function loadDB(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d){d.peso=d.peso||[];d.pressao=d.pressao||[];d.acucar=d.acucar||[];d.fc=d.fc||[];d.altura=d.altura||[];d.agua=d.agua||[];d.metaAgua=d.metaAgua||2000;d.exWorkouts=d.exWorkouts||[];return d;}}catch(e){}return{peso:[],pressao:[],acucar:[],fc:[],altura:[],agua:[],metaAgua:2000,exWorkouts:[]};}
 function saveDB(){localStorage.setItem(KEY,JSON.stringify(db));}
 const uid=()=>Date.now().toString(36)+Math.floor(Math.random()*1e6).toString(36);
 const q=id=>document.getElementById(id);
@@ -385,22 +579,18 @@ function renderHistory(){
   q('tabs').innerHTML=TABS.map(t=>`<button class="${t.id===curTab?'active':''}" onclick="setTab('${t.id}')">${t.icon} ${t.name}</button>`).join('');
   let recs=[...db[curTab]].sort((a,b)=>b.d-a.d);
   let listItems=[];
-  let statsData=[];
 
   if(curTab==='agua'){
-    // Agrupa por dia
     const dias = agruparAguaPorDia(db.agua);
     if(dias.length){
       const totais = dias.map(d=>d.total);
       const min=Math.min(...totais), max=Math.max(...totais), med=totais.reduce((s,v)=>s+v,0)/totais.length;
       q('stats').innerHTML=`<div class="stat"><b>${dias.length}</b><span>Dias</span></div><div class="stat"><b>${fmt1(totais[0])} ml</b><span>Último dia</span></div><div class="stat"><b>${fmt1(med)}</b><span>Média dia</span></div><div class="stat"><b>${fmt1(min)}–${fmt1(max)}</b><span>Faixa</span></div>`;
-      // Monta lista de dias
       listItems = dias.map(d=>{
         const dataStr = fmtDateShort(d.data);
-        return `<div class="h-item"><div><div class="h-val">${fmt1(d.total)} <small>ml</small></div><div class="h-date">${dataStr}</div></div><div class="h-right">${badgeHTML('💧','blue')}<button class="del" onclick="delDiaAgua('${d.data}')">🗑️</button></div></div>`;
+        return `<div class="h-item"><div><div class="h-val">${fmt1(d.total)} <small>ml</small></div><div class="h-date">${dataStr}</div></div><div class="h-right">${badgeHTML('💧','blue')}<button class="del" onclick="delDiaAgua(${d.data})">🗑️</button></div></div>`;
       });
-      // Para o gráfico, usamos os totais diários (ordenados cronologicamente)
-      const diasAsc = dias.slice().reverse(); // mais antigo primeiro
+      const diasAsc = dias.slice().reverse();
       const pts = diasAsc.map(d=>({x:d.data, y:d.total}));
       drawChartAgua(pts);
     }else{
@@ -409,11 +599,9 @@ function renderHistory(){
       drawChartAgua([]);
     }
     q('list').innerHTML=listItems.join('');
-    // O drawChart normal será substituído pelo específico para água
     return;
   }
 
-  // --- Para outros tipos (não água) ---
   const fmtV=v=>(curTab==='peso'||curTab==='acucar'||curTab==='altura')?fmt1(v):Math.round(v);
   if(recs.length){
     let vals;
@@ -426,7 +614,7 @@ function renderHistory(){
     else lastTxt=fmt1(recs[0].v);
     q('stats').innerHTML=`<div class="stat"><b>${recs.length}</b><span>Registros</span></div><div class="stat"><b>${lastTxt}</b><span>Último</span></div><div class="stat"><b>${fmtV(med)}</b><span>Média</span></div><div class="stat"><b>${fmtV(min)}–${fmtV(max)}</b><span>Faixa</span></div>`;
   }else q('stats').innerHTML='';
-  // Lista padrão
+  
   listItems = recs.map(itemHTML);
   q('list').innerHTML=listItems.length?listItems.join(''):`<div class="empty">Nenhum registro ainda.<br>Toque em <b>+</b> para adicionar.</div>`;
   drawChart(recs);
@@ -444,14 +632,17 @@ function itemHTML(r){
 
 function delRec(id){if(!confirm('Excluir este registro?'))return;db[curTab]=db[curTab].filter(r=>r.id!==id);saveDB();renderAll();toast('Registro excluído');}
 
-// Deletar um dia inteiro de água
 function delDiaAgua(dataTimestamp){
-  if(!confirm('Excluir todos os registros de água deste dia?'))return;
-  const inicio = new Date(dataTimestamp);
-  inicio.setHours(0,0,0,0);
+  if(!confirm('Excluir todos os registros de água deste dia?')) return;
+  const ts = Number(dataTimestamp);
+  const inicio = new Date(ts);
+  inicio.setHours(0, 0, 0, 0);
   const fim = new Date(inicio);
-  fim.setDate(fim.getDate()+1);
-  db.agua = db.agua.filter(r=>!(r.d>=inicio.getTime() && r.d<fim.getTime()));
+  fim.setDate(fim.getDate() + 1);
+  const startTs = inicio.getTime();
+  const endTs = fim.getTime();
+  
+  db.agua = db.agua.filter(r => !(r.d >= startTs && r.d < endTs));
   saveDB();
   renderAll();
   toast('Dia excluído');
@@ -474,7 +665,6 @@ function clearAll(){
 }
 
 /* ================= GRÁFICOS ================= */
-// Gráfico padrão (para os outros tipos)
 function drawChart(recs){
   const cv=q('chart'),ctx=cv.getContext('2d'),dpr=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;
   cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
@@ -500,7 +690,6 @@ function drawChart(recs){
     s.pts.forEach(p=>{ctx.fillStyle=s.cor;ctx.beginPath();ctx.arc(X(p.x),Y(p.y),3.2,0,7);ctx.fill();});});
 }
 
-// Gráfico específico para água (usando totais diários)
 function drawChartAgua(dias){
   const cv=q('chart'),ctx=cv.getContext('2d'),dpr=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;
   cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
@@ -548,7 +737,20 @@ function saveForm(){const t=curForm;if(!t)return;
 /* ============== NAVEGAÇÃO / UTIL ============== */
 function goHome(){show('home');}
 function goHist(){show('hist');renderHistory();}
-function show(s){q('screen-home').classList.toggle('active',s==='home');q('screen-hist').classList.toggle('active',s==='hist');q('nav-home').classList.toggle('active',s==='home');q('nav-hist').classList.toggle('active',s==='hist');window.scrollTo({top:0});}
+function goExercicios(){show('exercicios');loadExWorkouts();}
+function showExConfig(){show('ex-config');}
+function showExTimer(){show('ex-timer');}
+function show(s){
+  q('screen-home').classList.toggle('active',s==='home');
+  q('screen-hist').classList.toggle('active',s==='hist');
+  q('screen-exercicios').classList.toggle('active',s==='exercicios');
+  q('screen-ex-config').classList.toggle('active',s==='ex-config');
+  q('screen-ex-timer').classList.toggle('active',s==='ex-timer');
+  q('nav-home').classList.toggle('active',s==='home');
+  q('nav-hist').classList.toggle('active',s==='hist');
+  q('nav-ex').classList.toggle('active',s==='exercicios'||s==='ex-config'||s==='ex-timer');
+  window.scrollTo({top:0});
+}
 let toastTimer;function toast(m){const el=q('toast');el.textContent=m;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2200);}
 function exportCSV(){
   if(curTab==='agua'){
@@ -589,7 +791,244 @@ window.addEventListener('resize',()=>{
     drawChart([...db[curTab]].sort((a,b)=>b.d-a.d));
   }
 });
-renderAll();
+
+/* ============ CRONÓMETRO DE EXERCÍCIOS ============ */
+let exCurrentWorkout = null;
+let exTimerInterval = null;
+let exCurrentTime = 0;
+let exTotalTime = 0;
+let exCurrentPhase = 'preparar';
+let exCurrentRep = 1;
+let exIsRunning = false;
+let exAudioContext = null;
+
+function initExAudio(){
+  if(!exAudioContext){
+    exAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if(exAudioContext.state === 'suspended'){
+    exAudioContext.resume();
+  }
+}
+
+function playExBeep(){
+  if(!exAudioContext) return;
+  const oscillator = exAudioContext.createOscillator();
+  const gainNode = exAudioContext.createGain();
+  oscillator.type = 'sine';
+  oscillator.frequency.value = 880;
+  oscillator.connect(gainNode);
+  gainNode.connect(exAudioContext.destination);
+  const now = exAudioContext.currentTime;
+  gainNode.gain.setValueAtTime(0.15, now);
+  gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+  oscillator.start(now);
+  oscillator.stop(now + 0.15);
+}
+
+function loadExWorkouts(){
+  const list = q('exWorkoutList');
+  if(db.exWorkouts.length === 0){
+    list.innerHTML = '<div class="ex-empty">Nenhum treino salvo. Crie seu primeiro treino!</div>';
+    return;
+  }
+  list.innerHTML = db.exWorkouts.map(workout => `
+    <div class="ex-card">
+      <div class="ex-card-content">
+        <div class="ex-card-title">${workout.name}</div>
+        <div class="ex-card-details">
+          ${workout.repeticoes}x | ${workout.tipo === 'distancia' ? workout.distancia + 'm' : workout.tempoExercicio + 's'} |<br>
+          Descanso: ${workout.tempoDescanso}s
+        </div>
+      </div>
+      <div class="ex-card-actions">
+        <button class="ex-btn play" onclick="startExWorkout(${workout.id})">▶</button>
+        <button class="ex-btn del" onclick="deleteExWorkout(${workout.id})">🗑</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function saveExWorkout(){
+  const name = q('exWorkoutName').value;
+  if(!name){
+    alert('Por favor, digite o nome do treino');
+    return;
+  }
+  const tipo = document.querySelector('input[name="exTipo"]:checked').value;
+  const ritmo = document.querySelector('input[name="exRitmo"]:checked').value;
+  let tempoExercicio = 30;
+  if(tipo === 'tempo'){
+    tempoExercicio = parseInt(q('exTempoExercicio').value) || 30;
+  }
+  const workout = {
+    id: Date.now(),
+    name: name,
+    ritmo: ritmo,
+    tipo: tipo,
+    distancia: tipo === 'distancia' ? parseInt(q('exDistancia').value) || 0 : 0,
+    tempoExercicio: tempoExercicio,
+    tempoDescanso: parseInt(q('exTempoDescanso').value) || 15,
+    repeticoes: parseInt(q('exRepeticoes').value) || 1,
+    aquecimento: q('exAquecimento').checked,
+    desaceleracao: q('exDesaceleracao').checked
+  };
+  db.exWorkouts.push(workout);
+  saveDB();
+  alert('Treino salvo com sucesso!');
+  show('exercicios');
+  loadExWorkouts();
+  q('exWorkoutName').value = '';
+  q('exTempoExercicio').value = '';
+  q('exDistancia').value = '';
+  q('exRepeticoes').value = '';
+  q('exTempoDescanso').value = '15';
+  q('exAquecimento').checked = false;
+  q('exDesaceleracao').checked = false;
+}
+
+function deleteExWorkout(id){
+  if(confirm('Deseja excluir este treino?')){
+    db.exWorkouts = db.exWorkouts.filter(w => w.id !== id);
+    saveDB();
+    loadExWorkouts();
+  }
+}
+
+function startExWorkout(id){
+  exCurrentWorkout = db.exWorkouts.find(w => w.id === id);
+  if(!exCurrentWorkout) return;
+  exCurrentRep = 1;
+  exCurrentPhase = 'preparar';
+  exCurrentTime = 3;
+  exTotalTime = 3;
+  exIsRunning = false;
+  q('exDisplayWorkoutName').textContent = exCurrentWorkout.name;
+  q('exTotalReps').textContent = exCurrentWorkout.repeticoes;
+  q('exCurrentRep').textContent = exCurrentRep;
+  q('exDisplayTempoExercicio').textContent = exCurrentWorkout.tempoExercicio;
+  q('exDisplayTempoDescanso').textContent = exCurrentWorkout.tempoDescanso;
+  showExTimer();
+  updateExTimerDisplay();
+}
+
+function toggleExTimer(){
+  if(exIsRunning){
+    pauseExTimer();
+  }else{
+    startExTimer();
+  }
+}
+
+function startExTimer(){
+  initExAudio();
+  exIsRunning = true;
+  q('exBtnStartPause').textContent = '⏸ PAUSAR';
+  exTimerInterval = setInterval(() => {
+    if((exCurrentPhase === 'preparar' || exCurrentPhase === 'exercicio' || exCurrentPhase === 'descanso') && 
+       (exCurrentTime === 3 || exCurrentTime === 2 || exCurrentTime === 1)){
+      playExBeep();
+    }
+    exCurrentTime--;
+    if(exCurrentTime < 0){
+      nextExPhase();
+    }
+    updateExTimerDisplay();
+  }, 1000);
+}
+
+function pauseExTimer(){
+  exIsRunning = false;
+  q('exBtnStartPause').textContent = '▶ CONTINUAR';
+  clearInterval(exTimerInterval);
+}
+
+function resetExTimer(){
+  pauseExTimer();
+  exCurrentRep = 1;
+  exCurrentPhase = 'preparar';
+  exCurrentTime = 3;
+  exTotalTime = 3;
+  q('exBtnStartPause').textContent = '▶ INICIAR';
+  updateExTimerDisplay();
+}
+
+function nextExPhase(){
+  if(exCurrentPhase === 'preparar'){
+    exCurrentPhase = 'exercicio';
+    exCurrentTime = exCurrentWorkout.tempoExercicio;
+    exTotalTime = exCurrentTime;
+    q('exCurrentRep').textContent = exCurrentRep;
+  }else if(exCurrentPhase === 'exercicio'){
+    if(exCurrentRep >= exCurrentWorkout.repeticoes){
+      finishExWorkout();
+      return;
+    }
+    exCurrentPhase = 'descanso';
+    exCurrentTime = exCurrentWorkout.tempoDescanso;
+    exTotalTime = exCurrentTime;
+  }else if(exCurrentPhase === 'descanso'){
+    exCurrentRep++;
+    exCurrentPhase = 'exercicio';
+    exCurrentTime = exCurrentWorkout.tempoExercicio;
+    exTotalTime = exCurrentTime;
+    q('exCurrentRep').textContent = exCurrentRep;
+  }
+  updateExTimerDisplay();
+}
+
+function finishExWorkout(){
+  pauseExTimer();
+  q('exTimerPhase').textContent = 'TREINO CONCLUÍDO!';
+  q('exTimerTime').textContent = '✅';
+  q('exTimerLabel').textContent = 'Parabéns!';
+  q('exTimerCircle').style.setProperty('--progress', '360deg');
+  setTimeout(() => {
+    if(confirm('Treino concluído! Deseja iniciar novamente?')){
+      resetExTimer();
+      startExTimer();
+    }else{
+      show('exercicios');
+    }
+  }, 2000);
+}
+
+function updateExTimerDisplay(){
+  const minutes = Math.floor(exCurrentTime / 60);
+  const seconds = exCurrentTime % 60;
+  const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  q('exTimerTime').textContent = timeString;
+  q('exTimerLabel').textContent = 'Segundos';
+  let phaseText = '';
+  let progress = 0;
+  if(exCurrentPhase === 'preparar'){
+    phaseText = 'PREPARAR';
+    progress = ((exTotalTime - exCurrentTime) / exTotalTime) * 360;
+  }else if(exCurrentPhase === 'exercicio'){
+    phaseText = 'EXERCÍCIO';
+    progress = ((exTotalTime - exCurrentTime) / exTotalTime) * 360;
+  }else if(exCurrentPhase === 'descanso'){
+    phaseText = 'DESCANSO';
+    progress = ((exTotalTime - exCurrentTime) / exTotalTime) * 360;
+  }
+  q('exTimerPhase').textContent = phaseText;
+  q('exTimerCircle').style.setProperty('--progress', progress + 'deg');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('input[name="exTipo"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      if(e.target.value === 'distancia'){
+        q('exDistanciaGroup').style.display = 'block';
+        q('exTempoGroup').style.display = 'none';
+      }else{
+        q('exDistanciaGroup').style.display = 'none';
+        q('exTempoGroup').style.display = 'block';
+      }
+    });
+  });
+  renderAll();
+});
 </script>
 </body>
 </html>
