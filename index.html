@@ -133,6 +133,7 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
 .ex-btn{width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:transform .12s}
 .ex-btn:active{transform:scale(.95)}
 .ex-btn.play{background:#2ed573;color:#fff}
+.ex-btn.edit{background:#fbbf24;color:#fff}
 .ex-btn.del{background:rgba(248,113,113,.15);color:#f87171}
 .ex-create-btn{background:var(--blue);color:#fff;padding:16px;text-align:center;border-radius:16px;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 4px 15px rgba(77,124,243,.4)}
 .ex-empty{text-align:center;color:var(--muted);padding:40px 20px}
@@ -141,7 +142,7 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
 .ex-timer-screen{text-align:center}
 .ex-timer-info{background:var(--card);border-radius:16px;padding:20px;margin-bottom:20px}
 .ex-timer-name{font-size:18px;font-weight:800;margin-bottom:8px}
-.ex-timer-reps{font-size:24px;font-weight:800;color:var(--blue)}
+.ex-timer-reps{font-size:18px;font-weight:800;color:var(--blue)}
 .ex-timer-circle{width:220px;height:220px;border-radius:50%;background:var(--card);margin:0 auto 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;box-shadow:0 10px 30px rgba(0,0,0,.3)}
 .ex-timer-circle::before{content:'';position:absolute;inset:0;border-radius:50%;background:conic-gradient(var(--blue) var(--progress),var(--card2) 0);z-index:0}
 .ex-timer-inner{position:relative;z-index:1;background:var(--card);width:200px;height:200px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center}
@@ -370,76 +371,49 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
         <input type="text" id="exWorkoutName" placeholder="Ex: Treino Full Body">
       </div>
 
-      <div class="ex-section-title">Tipo de Exercício</div>
+      <div class="ex-section-title">Tempos do Treino</div>
       
       <div class="field">
-        <label>Ritmo</label>
-        <div class="ex-radio-group">
-          <div class="ex-radio-opt">
-            <input type="radio" name="exRitmo" id="exRitmoDevega" value="devega">
-            <label for="exRitmoDevega">Devega</label>
-          </div>
-          <div class="ex-radio-opt">
-            <input type="radio" name="exRitmo" id="exRitmoEstavel" value="estavel" checked>
-            <label for="exRitmoEstavel">Estável</label>
-          </div>
-          <div class="ex-radio-opt">
-            <input type="radio" name="exRitmo" id="exRitmoRapido" value="rapido">
-            <label for="exRitmoRapido">Rápido</label>
-          </div>
-        </div>
+        <label>Aquecimento (segundos)</label>
+        <input type="number" id="exTempoAquecimento" placeholder="Ex: 60" value="60">
       </div>
 
       <div class="field">
-        <label>Tipo</label>
-        <div class="ex-radio-group">
-          <div class="ex-radio-opt">
-            <input type="radio" name="exTipo" id="exTipoDistancia" value="distancia">
-            <label for="exTipoDistancia">Distância</label>
-          </div>
-          <div class="ex-radio-opt">
-            <input type="radio" name="exTipo" id="exTipoTempo" value="tempo" checked>
-            <label for="exTipoTempo">Tempo</label>
-          </div>
-        </div>
-      </div>
-
-      <div class="field" id="exDistanciaGroup" style="display:none">
-        <label>Distância (metros)</label>
-        <input type="number" id="exDistancia" placeholder="Ex: 100">
-      </div>
-
-      <div class="field" id="exTempoGroup">
-        <label>Tempo (segundos)</label>
-        <input type="number" id="exTempoExercicio" placeholder="Ex: 30">
+        <label>Exercício (segundos)</label>
+        <input type="number" id="exTempoExercicio" placeholder="Ex: 30" value="30">
       </div>
 
       <div class="field">
-        <label>Repetições</label>
-        <input type="number" id="exRepeticoes" placeholder="Ex: 10">
-      </div>
-
-      <div class="ex-section-title">Intervalos</div>
-      
-      <div class="field">
-        <label>Tempo de Descanso (segundos)</label>
+        <label>Descanso entre exercícios (segundos)</label>
         <input type="number" id="exTempoDescanso" placeholder="Ex: 15" value="15">
       </div>
 
-      <div class="ex-check-group">
-        <div class="ex-check-opt">
-          <input type="checkbox" id="exAquecimento" value="sim">
-          <label for="exAquecimento">Incluir Aquecimento</label>
+      <div class="ex-section-title">Estrutura</div>
+
+      <div class="form-row">
+        <div class="field">
+          <label>Repetições</label>
+          <input type="number" id="exRepeticoes" placeholder="Ex: 10" value="10">
         </div>
-        <div class="ex-check-opt">
-          <input type="checkbox" id="exDesaceleracao" value="sim">
-          <label for="exDesaceleracao">Incluir Desaceleração</label>
+        <div class="field">
+          <label>Rodadas</label>
+          <input type="number" id="exRodadas" placeholder="Ex: 3" value="3">
         </div>
       </div>
 
+      <div class="field">
+        <label>Descanso entre as Rodadas (segundos)</label>
+        <input type="number" id="exTempoDescansoRodada" placeholder="Ex: 60" value="60">
+      </div>
+
+      <div class="field">
+        <label>Desaceleração (segundos)</label>
+        <input type="number" id="exTempoDesaceleracao" placeholder="Ex: 60" value="60">
+      </div>
+
       <div style="margin-top:20px;display:flex;gap:10px">
-        <button class="btn primary block" onclick="saveExWorkout()">💾 SALVAR TREINO</button>
-        <button class="btn ghost" onclick="show('home')">← Voltar</button>
+        <button class="btn primary block" id="exSaveBtn" onclick="saveExWorkout()">💾 SALVAR TREINO</button>
+        <button class="btn ghost" onclick="resetExForm(); show('exercicios')">← Voltar</button>
       </div>
     </div>
   </section>
@@ -451,7 +425,8 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
     <div class="ex-timer-info">
       <div class="ex-timer-name" id="exDisplayWorkoutName">Nome do Treino</div>
       <div class="ex-timer-reps">
-        <span id="exCurrentRep">1</span> / <span id="exTotalReps">10</span> repetições
+        Rodada <span id="exCurrentRound">1</span>/<span id="exTotalRounds">3</span> &nbsp;|&nbsp; 
+        Rep <span id="exCurrentRep">1</span>/<span id="exTotalReps">10</span>
       </div>
     </div>
 
@@ -465,14 +440,14 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
     </div>
 
     <div class="ex-badges">
-      <span class="ex-badge ex">Exercício: <span id="exDisplayTempoExercicio">30</span>s</span>
-      <span class="ex-badge rest">Descanso: <span id="exDisplayTempoDescanso">15</span>s</span>
+      <span class="ex-badge ex">Ex: <span id="exDisplayTempoExercicio">30</span>s</span>
+      <span class="ex-badge rest">Desc: <span id="exDisplayTempoDescanso">15</span>s</span>
     </div>
 
     <div style="display:flex;flex-direction:column;gap:10px">
       <button class="btn primary big" id="exBtnStartPause" onclick="toggleExTimer()">▶ INICIAR</button>
       <button class="btn ghost" onclick="resetExTimer()">🔄 Reiniciar</button>
-      <button class="btn danger" onclick="show('exercicios')">← Voltar</button>
+      <button class="btn danger" onclick="resetExForm(); show('exercicios')">← Voltar</button>
     </div>
   </section>
 
@@ -570,7 +545,6 @@ function renderGoal(){
   const latest = last('peso');
   const latestWeight = latest ? latest.v : null;
 
-  // Preencher campos
   q('goalInitial').textContent = initial ? fmt1(initial)+'Kg' : '--';
   q('goalTarget').textContent = target ? fmt1(target)+'Kg' : '--';
   q('goalStartDate').textContent = startDate ? fmtDateShort(startDate) : '--';
@@ -578,7 +552,6 @@ function renderGoal(){
   q('goalCurrentWeight').textContent = latestWeight ? fmt1(latestWeight) : '--';
   q('goalTargetWeight').textContent = target ? fmt1(target) : '--';
 
-  // Mudança
   let change = null;
   let changeText = '--';
   let changeClass = '';
@@ -591,7 +564,6 @@ function renderGoal(){
   changeEl.textContent = changeText;
   changeEl.className = 'goal-stat-value ' + changeClass;
 
-  // Progresso
   let percent = 0;
   if(initial !== null && target !== null && latestWeight !== null){
     const total = initial - target;
@@ -605,7 +577,7 @@ function renderGoal(){
     }
   }
   q('goalPercent').innerHTML = Math.round(percent) + '<small>%</small>';
-  const circumference = 2 * Math.PI * 54; // r=54
+  const circumference = 2 * Math.PI * 54;
   const offset = circumference - (percent / 100) * circumference;
   const circle = q('goalCircleProgress');
   circle.style.strokeDasharray = circumference;
@@ -663,7 +635,6 @@ function renderHome(){
   q('b-acucar').innerHTML=a?badgeHTML(...classAcucar(a.v,a.ctx)):'';
   q('b-fc').innerHTML=f?badgeHTML(...classFC(f.v)):'';
 
-  // IMC
   if(p&&h){
     const hm=h.v/100, imc=p.v/(hm*hm);
     q('v-imc').textContent=fmt1(imc);
@@ -686,13 +657,10 @@ function renderHome(){
     q('imcHint').style.display='block';
   }
 
-  // Último registro geral
   const all=[...db.peso,...db.pressao,...db.acucar,...db.fc,...db.altura,...db.agua];
   q('lastTime').textContent=all.length?fmtTime(Math.max(...all.map(r=>r.d))):'--:--';
 
-  // Água
   renderAgua();
-  // Meta de emagrecimento
   renderGoal();
 }
 
@@ -708,7 +676,6 @@ const TABS=[
 let curTab='peso';
 function setTab(t){curTab=t;renderHistory();}
 
-/* ---- Agrupamento diário para água ---- */
 function agruparAguaPorDia(registros){
   const mapa={};
   registros.forEach(r=>{
@@ -885,7 +852,7 @@ function saveForm(){const t=curForm;if(!t)return;
 function goHome(){show('home');}
 function goHist(){show('hist');renderHistory();}
 function goExercicios(){show('exercicios');loadExWorkouts();}
-function showExConfig(){show('ex-config');}
+function showExConfig(){resetExForm(); show('ex-config');}
 function showExTimer(){show('ex-timer');}
 function show(s){
   q('screen-home').classList.toggle('active',s==='home');
@@ -946,8 +913,10 @@ let exCurrentTime = 0;
 let exTotalTime = 0;
 let exCurrentPhase = 'preparar';
 let exCurrentRep = 1;
+let exCurrentRound = 1;
 let exIsRunning = false;
 let exAudioContext = null;
+let editingWorkoutId = null;
 
 function initExAudio(){
   if(!exAudioContext){
@@ -958,19 +927,35 @@ function initExAudio(){
   }
 }
 
-function playExBeep(){
-  if(!exAudioContext) return;
+function playExBeep(type = 'short') {
+  if (!exAudioContext) return;
   const oscillator = exAudioContext.createOscillator();
   const gainNode = exAudioContext.createGain();
   oscillator.type = 'sine';
-  oscillator.frequency.value = 880;
+  
+  const now = exAudioContext.currentTime;
+  if (type === 'short') {
+    oscillator.frequency.value = 1000;
+    gainNode.gain.setValueAtTime(0.3, now);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+    oscillator.start(now);
+    oscillator.stop(now + 0.1);
+  } else if (type === 'high') {
+    oscillator.frequency.value = 1500; // Agudo
+    gainNode.gain.setValueAtTime(0.6, now); // Alto
+    gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+    oscillator.start(now);
+    oscillator.stop(now + 0.25);
+  } else { // long
+    oscillator.frequency.value = 600;
+    gainNode.gain.setValueAtTime(0.4, now);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+    oscillator.start(now);
+    oscillator.stop(now + 0.4);
+  }
+  
   oscillator.connect(gainNode);
   gainNode.connect(exAudioContext.destination);
-  const now = exAudioContext.currentTime;
-  gainNode.gain.setValueAtTime(0.15, now);
-  gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-  oscillator.start(now);
-  oscillator.stop(now + 0.15);
 }
 
 function loadExWorkouts(){
@@ -984,54 +969,85 @@ function loadExWorkouts(){
       <div class="ex-card-content">
         <div class="ex-card-title">${workout.name}</div>
         <div class="ex-card-details">
-          ${workout.repeticoes}x | ${workout.tipo === 'distancia' ? workout.distancia + 'm' : workout.tempoExercicio + 's'} |<br>
-          Descanso: ${workout.tempoDescanso}s
+          ${workout.rodadas}x Rodadas | ${workout.repeticoes}x Repetições<br>
+          Ex: ${workout.tempoExercicio}s | Desc: ${workout.tempoDescanso}s
         </div>
       </div>
       <div class="ex-card-actions">
         <button class="ex-btn play" onclick="startExWorkout(${workout.id})">▶</button>
+        <button class="ex-btn edit" onclick="editExWorkout(${workout.id})">✏️</button>
         <button class="ex-btn del" onclick="deleteExWorkout(${workout.id})">🗑</button>
       </div>
     </div>
   `).join('');
 }
 
+function resetExForm(){
+  editingWorkoutId = null;
+  q('exWorkoutName').value = '';
+  q('exTempoAquecimento').value = '60';
+  q('exTempoExercicio').value = '30';
+  q('exTempoDescanso').value = '15';
+  q('exRepeticoes').value = '10';
+  q('exRodadas').value = '3';
+  q('exTempoDescansoRodada').value = '60';
+  q('exTempoDesaceleracao').value = '60';
+  const saveBtn = q('exSaveBtn');
+  if(saveBtn) saveBtn.textContent = '💾 SALVAR TREINO';
+}
+
+function editExWorkout(id){
+  const workout = db.exWorkouts.find(w => w.id === id);
+  if(!workout) return;
+  editingWorkoutId = id;
+  q('exWorkoutName').value = workout.name;
+  q('exTempoAquecimento').value = workout.tempoAquecimento;
+  q('exTempoExercicio').value = workout.tempoExercicio;
+  q('exTempoDescanso').value = workout.tempoDescanso;
+  q('exRepeticoes').value = workout.repeticoes;
+  q('exRodadas').value = workout.rodadas;
+  q('exTempoDescansoRodada').value = workout.tempoDescansoRodada;
+  q('exTempoDesaceleracao').value = workout.tempoDesaceleracao;
+  
+  const saveBtn = q('exSaveBtn');
+  if(saveBtn) saveBtn.textContent = '💾 ATUALIZAR TREINO';
+  
+  show('ex-config');
+}
+
 function saveExWorkout(){
   const name = q('exWorkoutName').value;
   if(!name){
-    alert('Por favor, digite o nome do treino');
+    toast('⚠️ Por favor, digite o nome do treino');
     return;
   }
-  const tipo = document.querySelector('input[name="exTipo"]:checked').value;
-  const ritmo = document.querySelector('input[name="exRitmo"]:checked').value;
-  let tempoExercicio = 30;
-  if(tipo === 'tempo'){
-    tempoExercicio = parseInt(q('exTempoExercicio').value) || 30;
-  }
-  const workout = {
-    id: Date.now(),
+  const workoutData = {
+    id: editingWorkoutId || Date.now(),
     name: name,
-    ritmo: ritmo,
-    tipo: tipo,
-    distancia: tipo === 'distancia' ? parseInt(q('exDistancia').value) || 0 : 0,
-    tempoExercicio: tempoExercicio,
+    tempoAquecimento: parseInt(q('exTempoAquecimento').value) || 60,
+    tempoExercicio: parseInt(q('exTempoExercicio').value) || 30,
     tempoDescanso: parseInt(q('exTempoDescanso').value) || 15,
-    repeticoes: parseInt(q('exRepeticoes').value) || 1,
-    aquecimento: q('exAquecimento').checked,
-    desaceleracao: q('exDesaceleracao').checked
+    repeticoes: parseInt(q('exRepeticoes').value) || 10,
+    rodadas: parseInt(q('exRodadas').value) || 3,
+    tempoDescansoRodada: parseInt(q('exTempoDescansoRodada').value) || 60,
+    tempoDesaceleracao: parseInt(q('exTempoDesaceleracao').value) || 60
   };
-  db.exWorkouts.push(workout);
+  
+  if (editingWorkoutId) {
+    const index = db.exWorkouts.findIndex(w => w.id === editingWorkoutId);
+    if (index !== -1) {
+      db.exWorkouts[index] = workoutData;
+    }
+    toast('✅ Treino atualizado com sucesso!');
+  } else {
+    db.exWorkouts.push(workoutData);
+    toast('✅ Treino salvo com sucesso!');
+  }
+  
   saveDB();
-  alert('Treino salvo com sucesso!');
+  resetExForm();
   show('exercicios');
   loadExWorkouts();
-  q('exWorkoutName').value = '';
-  q('exTempoExercicio').value = '';
-  q('exDistancia').value = '';
-  q('exRepeticoes').value = '';
-  q('exTempoDescanso').value = '15';
-  q('exAquecimento').checked = false;
-  q('exDesaceleracao').checked = false;
 }
 
 function deleteExWorkout(id){
@@ -1045,16 +1061,22 @@ function deleteExWorkout(id){
 function startExWorkout(id){
   exCurrentWorkout = db.exWorkouts.find(w => w.id === id);
   if(!exCurrentWorkout) return;
+  
+  exCurrentRound = 1;
   exCurrentRep = 1;
   exCurrentPhase = 'preparar';
   exCurrentTime = 3;
   exTotalTime = 3;
   exIsRunning = false;
+  
   q('exDisplayWorkoutName').textContent = exCurrentWorkout.name;
+  q('exTotalRounds').textContent = exCurrentWorkout.rodadas;
+  q('exCurrentRound').textContent = exCurrentRound;
   q('exTotalReps').textContent = exCurrentWorkout.repeticoes;
   q('exCurrentRep').textContent = exCurrentRep;
   q('exDisplayTempoExercicio').textContent = exCurrentWorkout.tempoExercicio;
   q('exDisplayTempoDescanso').textContent = exCurrentWorkout.tempoDescanso;
+  
   showExTimer();
   updateExTimerDisplay();
 }
@@ -1072,12 +1094,17 @@ function startExTimer(){
   exIsRunning = true;
   q('exBtnStartPause').textContent = '⏸ PAUSAR';
   exTimerInterval = setInterval(() => {
-    if((exCurrentPhase === 'preparar' || exCurrentPhase === 'exercicio' || exCurrentPhase === 'descanso') && 
-       (exCurrentTime === 3 || exCurrentTime === 2 || exCurrentTime === 1)){
-      playExBeep();
+    // Lógica de bip nos últimos 3 segundos: 2 curtos e 1 agudo/alto
+    if (exCurrentTime === 3 || exCurrentTime === 2) {
+      playExBeep('short');
+    } else if (exCurrentTime === 1) {
+      playExBeep('high');
+    } else if (exCurrentTime === 0) {
+      playExBeep('long');
     }
+    
     exCurrentTime--;
-    if(exCurrentTime < 0){
+    if (exCurrentTime < 0) {
       nextExPhase();
     }
     updateExTimerDisplay();
@@ -1092,35 +1119,65 @@ function pauseExTimer(){
 
 function resetExTimer(){
   pauseExTimer();
+  exCurrentRound = 1;
   exCurrentRep = 1;
   exCurrentPhase = 'preparar';
   exCurrentTime = 3;
   exTotalTime = 3;
+  q('exCurrentRound').textContent = exCurrentRound;
+  q('exCurrentRep').textContent = exCurrentRep;
   q('exBtnStartPause').textContent = '▶ INICIAR';
   updateExTimerDisplay();
 }
 
 function nextExPhase(){
   if(exCurrentPhase === 'preparar'){
+    if(exCurrentWorkout.tempoAquecimento > 0){
+      exCurrentPhase = 'aquecimento';
+      exCurrentTime = exCurrentWorkout.tempoAquecimento;
+    } else {
+      exCurrentPhase = 'exercicio';
+      exCurrentTime = exCurrentWorkout.tempoExercicio;
+    }
+  } else if(exCurrentPhase === 'aquecimento'){
     exCurrentPhase = 'exercicio';
     exCurrentTime = exCurrentWorkout.tempoExercicio;
-    exTotalTime = exCurrentTime;
-    q('exCurrentRep').textContent = exCurrentRep;
-  }else if(exCurrentPhase === 'exercicio'){
-    if(exCurrentRep >= exCurrentWorkout.repeticoes){
-      finishExWorkout();
-      return;
+  } else if(exCurrentPhase === 'exercicio'){
+    if(exCurrentRep < exCurrentWorkout.repeticoes){
+      exCurrentPhase = 'descanso';
+      exCurrentTime = exCurrentWorkout.tempoDescanso;
+    } else {
+      if(exCurrentRound < exCurrentWorkout.rodadas){
+        exCurrentPhase = 'descanso_rodada';
+        exCurrentTime = exCurrentWorkout.tempoDescansoRodada;
+      } else {
+        if(exCurrentWorkout.tempoDesaceleracao > 0){
+          exCurrentPhase = 'desaceleracao';
+          exCurrentTime = exCurrentWorkout.tempoDesaceleracao;
+        } else {
+          finishExWorkout();
+          return;
+        }
+      }
     }
-    exCurrentPhase = 'descanso';
-    exCurrentTime = exCurrentWorkout.tempoDescanso;
-    exTotalTime = exCurrentTime;
-  }else if(exCurrentPhase === 'descanso'){
+  } else if(exCurrentPhase === 'descanso'){
     exCurrentRep++;
     exCurrentPhase = 'exercicio';
     exCurrentTime = exCurrentWorkout.tempoExercicio;
-    exTotalTime = exCurrentTime;
     q('exCurrentRep').textContent = exCurrentRep;
+  } else if(exCurrentPhase === 'descanso_rodada'){
+    exCurrentRound++;
+    exCurrentRep = 1;
+    exCurrentPhase = 'exercicio';
+    exCurrentTime = exCurrentWorkout.tempoExercicio;
+    q('exCurrentRound').textContent = exCurrentRound;
+    q('exCurrentRep').textContent = exCurrentRep;
+  } else if(exCurrentPhase === 'desaceleracao'){
+    finishExWorkout();
+    return;
   }
+  
+  exTotalTime = exCurrentTime;
   updateExTimerDisplay();
 }
 
@@ -1135,6 +1192,7 @@ function finishExWorkout(){
       resetExTimer();
       startExTimer();
     }else{
+      resetExForm();
       show('exercicios');
     }
   }, 2000);
@@ -1145,35 +1203,35 @@ function updateExTimerDisplay(){
   const seconds = exCurrentTime % 60;
   const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   q('exTimerTime').textContent = timeString;
-  q('exTimerLabel').textContent = 'Segundos';
+  
   let phaseText = '';
   let progress = 0;
+  
   if(exCurrentPhase === 'preparar'){
     phaseText = 'PREPARAR';
     progress = ((exTotalTime - exCurrentTime) / exTotalTime) * 360;
-  }else if(exCurrentPhase === 'exercicio'){
+  } else if(exCurrentPhase === 'aquecimento'){
+    phaseText = 'AQUECIMENTO';
+    progress = ((exTotalTime - exCurrentTime) / exTotalTime) * 360;
+  } else if(exCurrentPhase === 'exercicio'){
     phaseText = 'EXERCÍCIO';
     progress = ((exTotalTime - exCurrentTime) / exTotalTime) * 360;
-  }else if(exCurrentPhase === 'descanso'){
+  } else if(exCurrentPhase === 'descanso'){
     phaseText = 'DESCANSO';
     progress = ((exTotalTime - exCurrentTime) / exTotalTime) * 360;
+  } else if(exCurrentPhase === 'descanso_rodada'){
+    phaseText = 'DESCANSO DA RODADA';
+    progress = ((exTotalTime - exCurrentTime) / exTotalTime) * 360;
+  } else if(exCurrentPhase === 'desaceleracao'){
+    phaseText = 'DESACELERAÇÃO';
+    progress = ((exTotalTime - exCurrentTime) / exTotalTime) * 360;
   }
+  
   q('exTimerPhase').textContent = phaseText;
   q('exTimerCircle').style.setProperty('--progress', progress + 'deg');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('input[name="exTipo"]').forEach(radio => {
-    radio.addEventListener('change', (e) => {
-      if(e.target.value === 'distancia'){
-        q('exDistanciaGroup').style.display = 'block';
-        q('exTempoGroup').style.display = 'none';
-      }else{
-        q('exDistanciaGroup').style.display = 'none';
-        q('exTempoGroup').style.display = 'block';
-      }
-    });
-  });
   renderAll();
 });
 </script>
