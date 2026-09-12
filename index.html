@@ -390,11 +390,6 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
       <div class="ex-section-title">Tempos do Treino</div>
       
       <div class="field">
-        <label>Aquecimento (segundos)</label>
-        <input type="number" id="exTempoAquecimento" placeholder="Ex: 60" value="60">
-      </div>
-
-      <div class="field">
         <label>Exercício (segundos)</label>
         <input type="number" id="exTempoExercicio" placeholder="Ex: 30" value="30">
       </div>
@@ -420,11 +415,6 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
       <div class="field">
         <label>Descanso entre as Rodadas (segundos)</label>
         <input type="number" id="exTempoDescansoRodada" placeholder="Ex: 60" value="60">
-      </div>
-
-      <div class="field">
-        <label>Desaceleração (segundos)</label>
-        <input type="number" id="exTempoDesaceleracao" placeholder="Ex: 60" value="60">
       </div>
 
       <!-- Seletor de Música de Fundo -->
@@ -511,7 +501,6 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
 const KEY='minhaSaudeDB_v1';
 let db=loadDB();
 function loadDB(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d){d.peso=d.peso||[];d.pressao=d.pressao||[];d.acucar=d.acucar||[];d.fc=d.fc||[];d.altura=d.altura||[];d.agua=d.agua||[];d.metaAgua=d.metaAgua||2000;d.exWorkouts=d.exWorkouts||[];d.metaPesoInicial=d.metaPesoInicial||null;d.metaPesoObjetivo=d.metaPesoObjetivo||null;d.metaDataInicio=d.metaDataInicio||null;
-  // NOVO: volumes padrão
   if(typeof d.exMusicVolume!=='number')d.exMusicVolume=50;
   if(typeof d.exBeepVolume!=='number')d.exBeepVolume=50;
   return d;}}catch(e){}
@@ -526,7 +515,7 @@ const fmtDate=t=>{const d=new Date(t);return String(d.getDate()).padStart(2,'0')
 const fmtDateShort=t=>{const d=new Date(t);return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();};
 const hoje=()=>{const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();};
 
-/* ============ INDEXEDDB PARA ÁUDIO (sem limite de tamanho) ============ */
+/* ============ INDEXEDDB PARA ÁUDIO ============ */
 const AUDIO_DB_NAME = 'minhaSaudeAudioDB';
 const AUDIO_STORE = 'audios';
 let audioDBPromise = null;
@@ -958,7 +947,6 @@ function goExercicios(){show('exercicios');loadExWorkouts();}
 function showExConfig(){resetExForm(); show('ex-config');}
 function showExTimer(){show('ex-timer');}
 function show(s){
-  // Interromper música se sair da tela do timer
   if (s !== 'ex-timer' && exCurrentAudio) {
     exCurrentAudio.pause();
     if (exCurrentAudio.src) URL.revokeObjectURL(exCurrentAudio.src);
@@ -974,7 +962,6 @@ function show(s){
   q('nav-hist').classList.toggle('active',s==='hist');
   q('nav-ex').classList.toggle('active',s==='exercicios'||s==='ex-config'||s==='ex-timer');
   
-  // NOVO: sincronizar sliders de volume ao abrir a tela do timer
   if(s === 'ex-timer') syncVolumeControls();
   
   window.scrollTo({top:0});
@@ -1031,10 +1018,10 @@ let exCurrentRound = 1;
 let exIsRunning = false;
 let exAudioContext = null;
 let editingWorkoutId = null;
-let exAudioFiles = {}; // mantido por compatibilidade (cache de sessão)
+let exAudioFiles = {};
 let exCurrentAudio = null;
 
-/* ============ NOVO: CONTROLE DE VOLUME ============ */
+/* ============ CONTROLE DE VOLUME ============ */
 function syncVolumeControls(){
   const mSlider = q('exMusicVolumeSlider');
   const bSlider = q('exBeepVolumeSlider');
@@ -1075,7 +1062,6 @@ function playExBeep(type = 'short') {
   const gainNode = exAudioContext.createGain();
   oscillator.type = 'sine';
   
-  // NOVO: aplicar volume do bip (não afeta a música)
   const vol = (typeof db.exBeepVolume === 'number') ? (db.exBeepVolume / 100) : 0.5;
   
   const now = exAudioContext.currentTime;
@@ -1131,13 +1117,11 @@ function loadExWorkouts(){
 function resetExForm(){
   editingWorkoutId = null;
   q('exWorkoutName').value = '';
-  q('exTempoAquecimento').value = '60';
   q('exTempoExercicio').value = '30';
   q('exTempoDescanso').value = '15';
   q('exRepeticoes').value = '10';
   q('exRodadas').value = '3';
   q('exTempoDescansoRodada').value = '60';
-  q('exTempoDesaceleracao').value = '60';
   
   const fileInput = q('exMusicFile');
   if(fileInput) fileInput.value = '';
@@ -1153,13 +1137,11 @@ function editExWorkout(id){
   if(!workout) return;
   editingWorkoutId = id;
   q('exWorkoutName').value = workout.name;
-  q('exTempoAquecimento').value = workout.tempoAquecimento;
   q('exTempoExercicio').value = workout.tempoExercicio;
   q('exTempoDescanso').value = workout.tempoDescanso;
   q('exRepeticoes').value = workout.repeticoes;
   q('exRodadas').value = workout.rodadas;
   q('exTempoDescansoRodada').value = workout.tempoDescansoRodada;
-  q('exTempoDesaceleracao').value = workout.tempoDesaceleracao;
   
   const fileNameDisplay = q('exMusicFileName');
   if(workout.hasMusic && workout.musicName && fileNameDisplay) {
@@ -1186,13 +1168,11 @@ function saveExWorkout(){
   const workoutData = {
     id: workoutId,
     name: name,
-    tempoAquecimento: parseInt(q('exTempoAquecimento').value) || 60,
     tempoExercicio: parseInt(q('exTempoExercicio').value) || 30,
     tempoDescanso: parseInt(q('exTempoDescanso').value) || 15,
     repeticoes: parseInt(q('exRepeticoes').value) || 10,
     rodadas: parseInt(q('exRodadas').value) || 3,
     tempoDescansoRodada: parseInt(q('exTempoDescansoRodada').value) || 60,
-    tempoDesaceleracao: parseInt(q('exTempoDesaceleracao').value) || 60,
     hasMusic: existingWorkout ? !!existingWorkout.hasMusic : false,
     musicName: existingWorkout ? (existingWorkout.musicName || null) : null
   };
@@ -1205,7 +1185,6 @@ function saveExWorkout(){
     workoutData.musicName = fileInput.files[0].name;
   }
   
-  // Salvar dados do treino no localStorage
   if (editingWorkoutId) {
     const index = db.exWorkouts.findIndex(w => w.id === editingWorkoutId);
     if (index !== -1) db.exWorkouts[index] = workoutData;
@@ -1214,7 +1193,6 @@ function saveExWorkout(){
   }
   saveDB();
   
-  // NOVO: persistir o arquivo de música no IndexedDB (sem limite de tamanho)
   if (hasNewFile) {
     saveAudioBlob(workoutId, fileInput.files[0]).then(ok => {
       if(ok) toast('🎵 Música salva no treino!');
@@ -1249,14 +1227,12 @@ async function startExWorkout(id){
   exTotalTime = 3;
   exIsRunning = false;
   
-  // Interromper áudio anterior
   if(exCurrentAudio) {
     exCurrentAudio.pause();
     if (exCurrentAudio.src) URL.revokeObjectURL(exCurrentAudio.src);
     exCurrentAudio = null;
   }
   
-  // NOVO: carregar música persistida do IndexedDB
   try {
     const audioRecord = await getAudioBlob(id);
     if(audioRecord && audioRecord.blob){
@@ -1294,7 +1270,6 @@ function startExTimer(){
   exIsRunning = true;
   q('exBtnStartPause').textContent = '⏸ PAUSAR';
   
-  // Tocar música se existir (com volume configurado)
   if(exCurrentAudio) {
     exCurrentAudio.volume = ((typeof db.exMusicVolume === 'number') ? db.exMusicVolume : 50) / 100;
     exCurrentAudio.play().catch(e => console.log("Erro ao tocar áudio:", e));
@@ -1305,8 +1280,6 @@ function startExTimer(){
       playExBeep('short');
     } else if (exCurrentTime === 1) {
       playExBeep('high');
-    } else if (exCurrentTime === 0) {
-      playExBeep('long');
     }
     
     exCurrentTime--;
@@ -1349,14 +1322,6 @@ function resetExTimer(){
 
 function nextExPhase(){
   if(exCurrentPhase === 'preparar'){
-    if(exCurrentWorkout.tempoAquecimento > 0){
-      exCurrentPhase = 'aquecimento';
-      exCurrentTime = exCurrentWorkout.tempoAquecimento;
-    } else {
-      exCurrentPhase = 'exercicio';
-      exCurrentTime = exCurrentWorkout.tempoExercicio;
-    }
-  } else if(exCurrentPhase === 'aquecimento'){
     exCurrentPhase = 'exercicio';
     exCurrentTime = exCurrentWorkout.tempoExercicio;
   } else if(exCurrentPhase === 'exercicio'){
@@ -1368,13 +1333,8 @@ function nextExPhase(){
         exCurrentPhase = 'descanso_rodada';
         exCurrentTime = exCurrentWorkout.tempoDescansoRodada;
       } else {
-        if(exCurrentWorkout.tempoDesaceleracao > 0){
-          exCurrentPhase = 'desaceleracao';
-          exCurrentTime = exCurrentWorkout.tempoDesaceleracao;
-        } else {
-          finishExWorkout();
-          return;
-        }
+        finishExWorkout();
+        return;
       }
     }
   } else if(exCurrentPhase === 'descanso'){
@@ -1389,9 +1349,6 @@ function nextExPhase(){
     exCurrentTime = exCurrentWorkout.tempoExercicio;
     q('exCurrentRound').textContent = exCurrentRound;
     q('exCurrentRep').textContent = exCurrentRep;
-  } else if(exCurrentPhase === 'desaceleracao'){
-    finishExWorkout();
-    return;
   }
   
   exTotalTime = exCurrentTime;
@@ -1413,7 +1370,6 @@ function finishExWorkout(){
   
   setTimeout(() => {
     if(confirm('Treino concluído! Deseja iniciar novamente?')){
-      // Recarrega a música do IndexedDB para reiniciar
       const workoutId = exCurrentWorkout ? exCurrentWorkout.id : null;
       resetExTimer();
       if(workoutId) startExWorkout(workoutId);
@@ -1436,9 +1392,6 @@ function updateExTimerDisplay(){
   if(exCurrentPhase === 'preparar'){
     phaseText = 'PREPARAR';
     progress = ((exTotalTime - exCurrentTime) / exTotalTime) * 360;
-  } else if(exCurrentPhase === 'aquecimento'){
-    phaseText = 'AQUECIMENTO';
-    progress = ((exTotalTime - exCurrentTime) / exTotalTime) * 360;
   } else if(exCurrentPhase === 'exercicio'){
     phaseText = 'EXERCÍCIO';
     progress = ((exTotalTime - exCurrentTime) / exTotalTime) * 360;
@@ -1448,16 +1401,12 @@ function updateExTimerDisplay(){
   } else if(exCurrentPhase === 'descanso_rodada'){
     phaseText = 'DESCANSO DA RODADA';
     progress = ((exTotalTime - exCurrentTime) / exTotalTime) * 360;
-  } else if(exCurrentPhase === 'desaceleracao'){
-    phaseText = 'DESACELERAÇÃO';
-    progress = ((exTotalTime - exCurrentTime) / exTotalTime) * 360;
   }
   
   q('exTimerPhase').textContent = phaseText;
   q('exTimerCircle').style.setProperty('--progress', progress + 'deg');
 }
 
-// Listener para mostrar o nome do arquivo selecionado imediatamente
 document.addEventListener('change', function(e) {
   if (e.target && e.target.id === 'exMusicFile') {
     const fileNameDisplay = q('exMusicFileName');
