@@ -200,6 +200,10 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
 .goal-stat-value{font-size:14px;font-weight:700;color:#fff}
 .goal-stat-value.change{color:#4ade80}
 .goal-stat-value.change.neg{color:#f87171}
+
+/* ============ NOVO: EXIBIÇÃO DO EXERCÍCIO ATUAL ============ */
+.ex-current-exercise{font-size:18px;font-weight:800;color:#4ade80;margin:10px 0;min-height:28px;text-align:center;text-transform:uppercase;letter-spacing:0.5px;text-shadow:0 2px 8px rgba(74,222,128,0.2);}
+
 @media(max-width:420px){
 .goal-body{flex-wrap:wrap;justify-content:center}
 .goal-weights{flex:1 1 100%;flex-direction:row;justify-content:space-around}
@@ -387,6 +391,15 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
         <input type="text" id="exWorkoutName" placeholder="Ex: Treino Full Body">
       </div>
 
+      <!-- NOVO: Seção de Nomes dos Exercícios -->
+      <div class="ex-section-title">Sequência de Exercícios</div>
+      <div class="field" style="display:flex; gap:8px;">
+        <input type="text" id="exNomeExercicioInput" placeholder="Ex: Flexão de braço" style="flex:1;">
+        <button class="btn primary sm" onclick="addExNome()" style="white-space:nowrap;">+ Add</button>
+      </div>
+      <div id="exNomesLista" style="display:flex; flex-direction:column; gap:6px; margin-top:8px; max-height:200px; overflow-y:auto;"></div>
+      <div class="muted" style="font-size:11px; margin-top:4px; font-weight:600;">💡 Adicione os exercícios na ordem que serão realizados.</div>
+
       <div class="ex-section-title">Tempos do Treino</div>
       
       <div class="field">
@@ -403,8 +416,8 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
 
       <div class="form-row">
         <div class="field">
-          <label>Repetições</label>
-          <input type="number" id="exRepeticoes" placeholder="Ex: 10" value="10">
+          <label>Repetições (Ciclos)</label>
+          <input type="number" id="exRepeticoes" placeholder="Ex: 3" value="3">
         </div>
         <div class="field">
           <label>Rodadas</label>
@@ -438,9 +451,11 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
     
     <div class="ex-timer-info">
       <div class="ex-timer-name" id="exDisplayWorkoutName">Nome do Treino</div>
+      <!-- NOVO: Exibição do nome do exercício atual -->
+      <div class="ex-current-exercise" id="exCurrentExerciseName">Aguardando...</div>
       <div class="ex-timer-reps">
         Rodada <span id="exCurrentRound">1</span>/<span id="exTotalRounds">3</span> &nbsp;|&nbsp; 
-        Rep <span id="exCurrentRep">1</span>/<span id="exTotalReps">10</span>
+        Exercício <span id="exCurrentRep">1</span>/<span id="exTotalReps">1</span>
       </div>
     </div>
 
@@ -1015,11 +1030,13 @@ let exTotalTime = 0;
 let exCurrentPhase = 'preparar';
 let exCurrentRep = 1;
 let exCurrentRound = 1;
+let exCurrentExerciseIndex = 0; // NOVO: Índice do exercício atual na lista
 let exIsRunning = false;
 let exAudioContext = null;
 let editingWorkoutId = null;
 let exAudioFiles = {};
 let exCurrentAudio = null;
+let tempExNomes = []; // NOVO: Array temporário para nomes dos exercícios na configuração
 
 /* ============ CONTROLE DE VOLUME ============ */
 function syncVolumeControls(){
@@ -1095,12 +1112,14 @@ function loadExWorkouts(){
     list.innerHTML = '<div class="ex-empty">Nenhum treino salvo. Crie seu primeiro treino!</div>';
     return;
   }
-  list.innerHTML = db.exWorkouts.map(workout => `
+  list.innerHTML = db.exWorkouts.map(workout => {
+    const exCount = workout.exercicios ? workout.exercicios.length : 0;
+    return `
     <div class="ex-card">
       <div class="ex-card-content">
         <div class="ex-card-title">${workout.name}</div>
         <div class="ex-card-details">
-          ${workout.rodadas}x Rodadas | ${workout.repeticoes}x Repetições<br>
+          ${workout.rodadas}x Rodadas | ${exCount} Exercícios na sequência<br>
           Ex: ${workout.tempoExercicio}s | Desc: ${workout.tempoDescanso}s
         </div>
         ${workout.hasMusic ? `<div class="ex-card-music">🎵 ${workout.musicName || 'Música anexada'}</div>` : ''}
@@ -1110,6 +1129,36 @@ function loadExWorkouts(){
         <button class="ex-btn edit" onclick="editExWorkout(${workout.id})">✏️</button>
         <button class="ex-btn del" onclick="deleteExWorkout(${workout.id})">🗑</button>
       </div>
+    </div>
+  `}).join('');
+}
+
+// NOVO: Funções para gerenciar a lista de nomes de exercícios
+function addExNome() {
+  const input = q('exNomeExercicioInput');
+  const nome = input.value.trim();
+  if (!nome) return toast('⚠️ Digite o nome do exercício');
+  tempExNomes.push(nome);
+  input.value = '';
+  renderExNomesLista();
+}
+
+function removeExNome(index) {
+  tempExNomes.splice(index, 1);
+  renderExNomesLista();
+}
+
+function renderExNomesLista() {
+  const container = q('exNomesLista');
+  if (!container) return;
+  if (tempExNomes.length === 0) {
+    container.innerHTML = '<div class="muted" style="font-size:12px; text-align:center; padding:8px;">Nenhum exercício adicionado</div>';
+    return;
+  }
+  container.innerHTML = tempExNomes.map((nome, i) => `
+    <div style="display:flex; align-items:center; justify-content:space-between; background:var(--card2); padding:10px 12px; border-radius:10px; font-size:14px; font-weight:700;">
+      <span style="display:flex; align-items:center; gap:8px;"><span style="background:var(--blue); color:#fff; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px;">${i+1}</span> ${nome}</span>
+      <button class="btn danger sm" style="padding:4px 8px; font-size:12px; width:auto; height:auto;" onclick="removeExNome(${i})">✕</button>
     </div>
   `).join('');
 }
@@ -1130,6 +1179,10 @@ function resetExForm(){
   
   const saveBtn = q('exSaveBtn');
   if(saveBtn) saveBtn.textContent = '💾 SALVAR TREINO';
+  
+  // NOVO: Resetar lista de exercícios
+  tempExNomes = [];
+  renderExNomesLista();
 }
 
 function editExWorkout(id){
@@ -1142,6 +1195,10 @@ function editExWorkout(id){
   q('exRepeticoes').value = workout.repeticoes;
   q('exRodadas').value = workout.rodadas;
   q('exTempoDescansoRodada').value = workout.tempoDescansoRodada;
+  
+  // NOVO: Carregar lista de exercícios
+  tempExNomes = workout.exercicios ? [...workout.exercicios] : [];
+  renderExNomesLista();
   
   const fileNameDisplay = q('exMusicFileName');
   if(workout.hasMusic && workout.musicName && fileNameDisplay) {
@@ -1162,6 +1219,12 @@ function saveExWorkout(){
     toast('⚠️ Por favor, digite o nome do treino');
     return;
   }
+  // NOVO: Validação para garantir que haja pelo menos um exercício
+  if(tempExNomes.length === 0){
+    toast('⚠️ Adicione pelo menos um nome de exercício');
+    return;
+  }
+  
   const workoutId = editingWorkoutId || Date.now();
   const existingWorkout = editingWorkoutId ? db.exWorkouts.find(w => w.id === editingWorkoutId) : null;
   
@@ -1173,6 +1236,7 @@ function saveExWorkout(){
     repeticoes: parseInt(q('exRepeticoes').value) || 10,
     rodadas: parseInt(q('exRodadas').value) || 3,
     tempoDescansoRodada: parseInt(q('exTempoDescansoRodada').value) || 60,
+    exercicios: [...tempExNomes], // NOVO: Salvar array de exercícios
     hasMusic: existingWorkout ? !!existingWorkout.hasMusic : false,
     musicName: existingWorkout ? (existingWorkout.musicName || null) : null
   };
@@ -1222,6 +1286,7 @@ async function startExWorkout(id){
   
   exCurrentRound = 1;
   exCurrentRep = 1;
+  exCurrentExerciseIndex = 0; // NOVO: Iniciar no primeiro exercício
   exCurrentPhase = 'preparar';
   exCurrentTime = 3;
   exTotalTime = 3;
@@ -1248,8 +1313,12 @@ async function startExWorkout(id){
   q('exDisplayWorkoutName').textContent = exCurrentWorkout.name;
   q('exTotalRounds').textContent = exCurrentWorkout.rodadas;
   q('exCurrentRound').textContent = exCurrentRound;
-  q('exTotalReps').textContent = exCurrentWorkout.repeticoes;
-  q('exCurrentRep').textContent = exCurrentRep;
+  
+  // NOVO: Atualizar contadores para refletir a lista de exercícios
+  const totalEx = exCurrentWorkout.exercicios ? exCurrentWorkout.exercicios.length : 1;
+  q('exTotalReps').textContent = totalEx;
+  q('exCurrentRep').textContent = exCurrentExerciseIndex + 1;
+  
   q('exDisplayTempoExercicio').textContent = exCurrentWorkout.tempoExercicio;
   q('exDisplayTempoDescanso').textContent = exCurrentWorkout.tempoDescanso;
   
@@ -1303,12 +1372,16 @@ function pauseExTimer(){
 function resetExTimer(){
   pauseExTimer();
   exCurrentRound = 1;
-  exCurrentRep = 1;
+  exCurrentExerciseIndex = 0; // NOVO: Resetar índice
   exCurrentPhase = 'preparar';
   exCurrentTime = 3;
   exTotalTime = 3;
   q('exCurrentRound').textContent = exCurrentRound;
-  q('exCurrentRep').textContent = exCurrentRep;
+  
+  const totalEx = exCurrentWorkout && exCurrentWorkout.exercicios ? exCurrentWorkout.exercicios.length : 1;
+  q('exCurrentRep').textContent = exCurrentExerciseIndex + 1;
+  q('exTotalReps').textContent = totalEx;
+  
   q('exBtnStartPause').textContent = '▶ INICIAR';
   
   if(exCurrentAudio) {
@@ -1321,14 +1394,21 @@ function resetExTimer(){
 }
 
 function nextExPhase(){
+  const totalEx = exCurrentWorkout.exercicios ? exCurrentWorkout.exercicios.length : 1;
+  
   if(exCurrentPhase === 'preparar'){
     exCurrentPhase = 'exercicio';
     exCurrentTime = exCurrentWorkout.tempoExercicio;
+    exCurrentExerciseIndex = 0;
   } else if(exCurrentPhase === 'exercicio'){
-    if(exCurrentRep < exCurrentWorkout.repeticoes){
+    // Finalizou o exercício atual
+    if(exCurrentExerciseIndex < totalEx - 1){
+      // Avança para o próximo exercício na lista
+      exCurrentExerciseIndex++;
       exCurrentPhase = 'descanso';
       exCurrentTime = exCurrentWorkout.tempoDescanso;
     } else {
+      // Era o último exercício da lista
       if(exCurrentRound < exCurrentWorkout.rodadas){
         exCurrentPhase = 'descanso_rodada';
         exCurrentTime = exCurrentWorkout.tempoDescansoRodada;
@@ -1338,18 +1418,19 @@ function nextExPhase(){
       }
     }
   } else if(exCurrentPhase === 'descanso'){
-    exCurrentRep++;
     exCurrentPhase = 'exercicio';
     exCurrentTime = exCurrentWorkout.tempoExercicio;
-    q('exCurrentRep').textContent = exCurrentRep;
   } else if(exCurrentPhase === 'descanso_rodada'){
     exCurrentRound++;
-    exCurrentRep = 1;
+    exCurrentExerciseIndex = 0; // NOVO: Reinicia do primeiro exercício na nova rodada
     exCurrentPhase = 'exercicio';
     exCurrentTime = exCurrentWorkout.tempoExercicio;
     q('exCurrentRound').textContent = exCurrentRound;
-    q('exCurrentRep').textContent = exCurrentRep;
   }
+  
+  // NOVO: Atualizar display de progresso do exercício
+  q('exCurrentRep').textContent = exCurrentExerciseIndex + 1;
+  q('exTotalReps').textContent = totalEx;
   
   exTotalTime = exCurrentTime;
   updateExTimerDisplay();
@@ -1389,6 +1470,13 @@ function updateExTimerDisplay(){
   let phaseText = '';
   let progress = 0;
   
+  // NOVO: Atualizar o nome do exercício atual na tela
+  const exerciseNameEl = q('exCurrentExerciseName');
+  if(exerciseNameEl && exCurrentWorkout && exCurrentWorkout.exercicios) {
+    const currentExName = exCurrentWorkout.exercicios[exCurrentExerciseIndex] || 'Exercício';
+    exerciseNameEl.textContent = currentExName;
+  }
+
   if(exCurrentPhase === 'preparar'){
     phaseText = 'PREPARAR';
     progress = ((exTotalTime - exCurrentTime) / exTotalTime) * 360;
@@ -1421,6 +1509,7 @@ document.addEventListener('change', function(e) {
 document.addEventListener('DOMContentLoaded', () => {
   renderAll();
   syncVolumeControls();
+  renderExNomesLista(); // NOVO: Inicializar lista vazia na configuração
 });
 </script>
 </body>
