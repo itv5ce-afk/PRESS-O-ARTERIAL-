@@ -109,6 +109,21 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
 .imc-row.active{outline:2px solid var(--blue);color:#fff !important}
 .imc-hint{text-align:center;font-size:12px;margin-top:12px;font-weight:600}
 
+/* ============ NOVO: CARDÁPIO DIÁRIO ============ */
+.cardapio-card{margin-top:14px}
+.cardapio-formula{font-size:10px;color:var(--muted);font-weight:700;text-align:center;margin-top:4px}
+
+/* ============ NOVO: CARDÁPIO DA SEMANA (MODAL) ============ */
+.menu-scroll{max-height:65vh;overflow-y:auto;padding-right:6px;-webkit-overflow-scrolling:touch}
+.menu-day{background:var(--card2);border-radius:14px;padding:14px;margin-bottom:12px}
+.menu-day h3{color:var(--blue);font-size:15px;margin-bottom:8px;font-weight:800}
+.menu-meal{margin-bottom:8px;font-size:13px;line-height:1.5;color:#e2e8f0}
+.menu-meal b{color:#fff}
+.menu-obs{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:14px;padding:14px;margin-top:16px}
+.menu-obs h3{color:#4ade80;font-size:15px;margin-bottom:8px;font-weight:800}
+.menu-obs p{font-size:13px;line-height:1.5;color:#e2e8f0;margin-bottom:8px}
+.menu-obs p:last-child{margin-bottom:0}
+
 /* ============ MEDIDOR DE ÁGUA ============ */
 .agua-card .agua-progress-wrap{width:100%;background:var(--card2);border-radius:999px;height:14px;margin:8px 0;overflow:hidden}
 .agua-progress{height:100%;border-radius:999px;background:var(--blue);width:0%;transition:width .4s ease}
@@ -217,9 +232,9 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
 <body>
 <div id="app">
 
-  <!-- ============ PÁGINA INICIAL ============ -->
+  <!-- ============ SAUDE EM DIA ============ -->
   <section id="screen-home" class="screen active">
-    <h1 class="page-title">PÁGINA INICIAL</h1>
+    <h1 class="page-title">SAUDE EM DIA</h1>
     
     <div class="card" style="display:none;">
       <div class="hero-top">
@@ -304,7 +319,34 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
       <div class="muted imc-hint" id="imcHint">Registre seu <b>peso</b> e sua <b>altura</b> para calcular o IMC e o peso ideal.</div>
     </div>
 
-    <!-- META DE EMAGRECIMENTO (reposicionada para baixo do IMC) -->
+    <!-- NOVO: CARDÁPIO DIÁRIO -->
+    <div class="card cardapio-card">
+      <div class="imc-head">📅 CARDÁPIO DIÁRIO</div>
+      <div class="imc-grid">
+        <div class="imc-box">
+          <span class="imc-label">🥩 PROTEÍNAS</span>
+          <div class="imc-val" id="calc-proteina">--</div>
+          <div class="cardapio-formula" id="calc-proteina-formula"></div>
+        </div>
+        <div class="imc-box">
+          <span class="imc-label">💧 ÁGUA</span>
+          <div class="imc-val" id="calc-agua">--</div>
+          <div class="cardapio-formula" id="calc-agua-formula"></div>
+        </div>
+        <div class="imc-box">
+          <span class="imc-label">🔥 CARBOIDRATO</span>
+          <div class="imc-val" style="font-size:16px;line-height:1.3;">50g a 100g<br><small>por refeição</small></div>
+        </div>
+        <div class="imc-box">
+          <span class="imc-label">⚡ CREATINA</span>
+          <div class="imc-val" id="calc-creatina">--</div>
+          <div class="cardapio-formula" id="calc-creatina-formula"></div>
+        </div>
+      </div>
+      <button class="btn primary block" style="margin-top:14px" onclick="openCardapioSemanal()">📖 CARDÁPIO DA SEMANA</button>
+    </div>
+
+    <!-- META DE EMAGRECIMENTO -->
     <div class="card goal-card" id="goalCard">
       <div class="goal-header">
         <span class="goal-title">Progresso do objetivo</span>
@@ -359,7 +401,7 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
       <div class="ex-banner-title">Cronómetro para Exercícios</div>
       <div class="ex-banner-sub">
         <div class="ex-no-equip">🚫</div>
-        ITV Saude
+        SAUDE EM DIA
       </div>
     </div>
 
@@ -391,7 +433,6 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
         <input type="text" id="exWorkoutName" placeholder="Ex: Treino Full Body">
       </div>
 
-      <!-- NOVO: Seção de Nomes dos Exercícios -->
       <div class="ex-section-title">Sequência de Exercícios</div>
       <div class="field" style="display:flex; gap:8px;">
         <input type="text" id="exNomeExercicioInput" placeholder="Ex: Flexão de braço" style="flex:1;">
@@ -430,7 +471,6 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
         <input type="number" id="exTempoDescansoRodada" placeholder="Ex: 60" value="60">
       </div>
 
-      <!-- Seletor de Música de Fundo -->
       <div class="field">
         <label>Música de Fundo (Opcional)</label>
         <input type="file" id="exMusicFile" accept=".mp3, .mp4, .m4a, audio/*, video/mp4" style="padding:12px 14px;background:var(--card2);border:none;border-radius:14px;color:#fff;font-size:14px;font-weight:700;width:100%;outline:none;cursor:pointer;">
@@ -451,7 +491,6 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
     
     <div class="ex-timer-info">
       <div class="ex-timer-name" id="exDisplayWorkoutName">Nome do Treino</div>
-      <!-- NOVO: Exibição do nome do exercício atual -->
       <div class="ex-current-exercise" id="exCurrentExerciseName">Aguardando...</div>
       <div class="ex-timer-reps">
         Rodada <span id="exCurrentRound">1</span>/<span id="exTotalRounds">3</span> &nbsp;|&nbsp; 
@@ -479,7 +518,6 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
       <button class="btn danger" onclick="resetExForm(); show('exercicios')">← Voltar</button>
     </div>
 
-    <!-- ============ NOVO: CONTROLES DE VOLUME ============ -->
     <div class="vol-card">
       <div class="vol-title">🎚️ Controles de Áudio</div>
       <div class="vol-row">
@@ -495,7 +533,6 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
         <span class="vol-value" id="exBeepVolumeVal">50%</span>
       </div>
     </div>
-
   </section>
 
 </div>
@@ -726,6 +763,96 @@ function saveGoalModal(){
   toast('🎯 Meta atualizada!');
 }
 
+/* ================= NOVO: CARDÁPIO DIÁRIO ================= */
+function renderCardapioDiario(){
+  const p = last('peso');
+  if(p){
+    const peso = p.v;
+    const proteina = (peso * 2).toFixed(0);
+    const agua = (peso * 35).toFixed(0);
+    const creatina = (peso * 0.03).toFixed(1);
+    
+    q('calc-proteina').innerHTML = `${proteina} <small>g/dia</small>`;
+    q('calc-proteina-formula').textContent = `(${peso}kg x 2)`;
+    
+    q('calc-agua').innerHTML = `${agua} <small>ml/dia</small>`;
+    q('calc-agua-formula').textContent = `(${peso}kg x 35)`;
+    
+    q('calc-creatina').innerHTML = `${creatina} <small>g/dia</small>`;
+    q('calc-creatina-formula').textContent = `(${peso}kg x 0.03)`;
+  } else {
+    q('calc-proteina').textContent = '--';
+    q('calc-proteina-formula').textContent = '';
+    q('calc-agua').textContent = '--';
+    q('calc-agua-formula').textContent = '';
+    q('calc-creatina').textContent = '--';
+    q('calc-creatina-formula').textContent = '';
+  }
+}
+
+function openCardapioSemanal(){
+  const menuHTML = `
+    <div class="m-head">
+      <span class="m-ico">📖</span>
+      <h2>Cardápio da Semana</h2>
+      <button class="x" onclick="closeModal()">✕</button>
+    </div>
+    <div class="menu-scroll">
+      <div class="menu-day">
+        <h3>#DIA 1 (DOMINGO)</h3>
+        <div class="menu-meal"><b>Café☕️🍳🥪:</b><br>2 ovos, 2 fatias de pão integral, 100g de banana, 1 scoop de whey, 1 scoop de creatina, café sem açúcar</div>
+        <div class="menu-meal"><b>Almoço🥗🍗:</b><br>200g de Frango assado, 50g de arroz cozido, 50g de feijão cozido, salada à vontade</div>
+        <div class="menu-meal"><b>Jantar🥘🥚:</b><br>500ml de Canja de frango com legumes, 200g de proteínas ou 3 ovos cozidos</div>
+      </div>
+      <div class="menu-day">
+        <h3>#DIA 2 (SEGUNDA)</h3>
+        <div class="menu-meal"><b>Café☕️🍳🥪:</b><br>2 ovos, 2 fatias de pão integral, 100g de banana, 1 scoop de whey, 1 scoop de creatina, café sem açúcar</div>
+        <div class="menu-meal"><b>Almoço🥗🥩:</b><br>200g de Carne moída magra, 50g de arroz, 50g de feijão, salada à vontade</div>
+        <div class="menu-meal"><b>Jantar🥗🍗:</b><br>200g de Frango desfiado, 250g de abóbora, legumes</div>
+      </div>
+      <div class="menu-day">
+        <h3>#DIA 3 (TERÇA)</h3>
+        <div class="menu-meal"><b>Café🥤🍌🍓:</b><br>100g de banana, 100g de morangos, 1 scoop de whey, 1 scoop de creatina, 300ml de água</div>
+        <div class="menu-meal"><b>Almoço🥗🍗:</b><br>200g de Frango assado, 50g de arroz, 50g de feijão, salada à vontade</div>
+        <div class="menu-meal"><b>Jantar🍳🍗:</b><br>Omelete com 3 ovos, 100g de frango desfiado, legumes</div>
+      </div>
+      <div class="menu-day">
+        <h3>#DIA 4 (QUARTA)</h3>
+        <div class="menu-meal"><b>Café🥚🍌🍓:</b><br>3 ovos mexidos, 100g de banana, 100g de morangos, café sem açúcar</div>
+        <div class="menu-meal"><b>Almoço🥗🍗:</b><br>200g de Peito de frango, 50g de arroz, 50g feijão, salada à vontade</div>
+        <div class="menu-meal"><b>Jantar🥘🍗:</b><br>500ml Canja com bastante frango e legumes, 2 ovos</div>
+      </div>
+      <div class="menu-day">
+        <h3>#DIA 5 (QUINTA)</h3>
+        <div class="menu-meal"><b>Café🥤🍌🍓:</b><br>100g de banana, 100g de morangos, 1 scoop de whey, 1 scoop de creatina, 300ml de água</div>
+        <div class="menu-meal"><b>Almoço🥗🥩:</b><br>200g de Carne bovina magra, 50g arroz, 50g feijão, salada à vontade</div>
+        <div class="menu-meal"><b>Jantar🥘🍗:</b><br>100g de Frango, 200g de batata-doce cozida, legumes</div>
+      </div>
+      <div class="menu-day">
+        <h3>#DIA 6 (SEXTA)</h3>
+        <div class="menu-meal"><b>Café🍳🥪🍌🥤:</b><br>2 ovos, 2 fatias de pão integral, 100g de banana, 1 scoop de whey, 1 scoop de creatina</div>
+        <div class="menu-meal"><b>Almoço🥗🍗:</b><br>200g Frango, 50g arroz, 50g feijão, salada à vontade</div>
+        <div class="menu-meal"><b>Jantar🥘🥚:</b><br>500ml de Canja de frango, 200g de proteínas ou 3 ovos cozidos</div>
+      </div>
+      <div class="menu-day">
+        <h3>#DIA 7 (SÁBADO)</h3>
+        <div class="menu-meal"><b>Café🥤🍌🍓:</b><br>100g de banana, 100g de morangos, 1 scoop de whey, 1 scoop de creatina, 300ml de água</div>
+        <div class="menu-meal"><b>Almoço🥗🍗:</b><br>200g de Frango assado, 50g de arroz, 50g de feijão, salada à vontade</div>
+        <div class="menu-meal"><b>Jantar🍳🍗:</b><br>Omelete de 3 ovos, 100g de frango, 200g de abóbora/legumes</div>
+      </div>
+
+      <div class="menu-obs">
+        <h3>OBSERVAÇÕES:</h3>
+        <p><b>🥗 Sua salada:</b> Pode manter praticamente todos os dias: couve, alface, tomate, cebola, alho, quiabo, limão, vinagre. Não precisa pesar as folhas. Cuidado apenas com o azeite: se usar, limite a aproximadamente 1 colher de chá (5 ml) por refeição, porque ele é bastante calórico.</p>
+        <p><b>🍓 Frutas:</b> Caso você sinta fome, pode comer entre as refeições UMA FRUTA como: morangos, maçã, laranja, banana, uva, melancia, etc.</p>
+        <p><b>💧 Água:</b> 3 litros por dia, pode manter como ponto de partida. Nos dias muito quentes ou de muito suor, pode precisar de mais.</p>
+      </div>
+    </div>
+  `;
+  q('modalBox').innerHTML = menuHTML;
+  q('overlay').classList.add('show');
+}
+
 /* ================= HOME ================= */
 function renderHome(){
   const p=last('peso'),pr=last('pressao'),a=last('acucar'),f=last('fc'),h=last('altura');
@@ -767,6 +894,7 @@ function renderHome(){
   const all=[...db.peso,...db.pressao,...db.acucar,...db.fc,...db.altura,...db.agua];
   q('lastTime').textContent=all.length?fmtTime(Math.max(...all.map(r=>r.d))):'--:--';
 
+  renderCardapioDiario();
   renderAgua();
   renderGoal();
 }
@@ -1030,13 +1158,13 @@ let exTotalTime = 0;
 let exCurrentPhase = 'preparar';
 let exCurrentRep = 1;
 let exCurrentRound = 1;
-let exCurrentExerciseIndex = 0; // NOVO: Índice do exercício atual na lista
+let exCurrentExerciseIndex = 0;
 let exIsRunning = false;
 let exAudioContext = null;
 let editingWorkoutId = null;
 let exAudioFiles = {};
 let exCurrentAudio = null;
-let tempExNomes = []; // NOVO: Array temporário para nomes dos exercícios na configuração
+let tempExNomes = [];
 
 /* ============ CONTROLE DE VOLUME ============ */
 function syncVolumeControls(){
@@ -1133,7 +1261,6 @@ function loadExWorkouts(){
   `}).join('');
 }
 
-// NOVO: Funções para gerenciar a lista de nomes de exercícios
 function addExNome() {
   const input = q('exNomeExercicioInput');
   const nome = input.value.trim();
@@ -1148,7 +1275,6 @@ function removeExNome(index) {
   renderExNomesLista();
 }
 
-// NOVO: Função para renderizar a lista com botão de editar
 function renderExNomesLista() {
   const container = q('exNomesLista');
   if (!container) return;
@@ -1170,7 +1296,6 @@ function renderExNomesLista() {
   `).join('');
 }
 
-// NOVO: Função para ativar a edição inline do nome do exercício
 function inlineEditExNome(index) {
   const textSpan = document.getElementById(`ex-nome-text-${index}`);
   const currentName = tempExNomes[index];
@@ -1189,7 +1314,6 @@ function inlineEditExNome(index) {
   });
 }
 
-// NOVO: Função para salvar a edição do nome do exercício
 function saveExNome(index) {
   const input = document.getElementById(`ex-edit-input-${index}`);
   if (input) {
@@ -1218,7 +1342,6 @@ function resetExForm(){
   const saveBtn = q('exSaveBtn');
   if(saveBtn) saveBtn.textContent = '💾 SALVAR TREINO';
   
-  // NOVO: Resetar lista de exercícios
   tempExNomes = [];
   renderExNomesLista();
 }
@@ -1234,7 +1357,6 @@ function editExWorkout(id){
   q('exRodadas').value = workout.rodadas;
   q('exTempoDescansoRodada').value = workout.tempoDescansoRodada;
   
-  // NOVO: Carregar lista de exercícios
   tempExNomes = workout.exercicios ? [...workout.exercicios] : [];
   renderExNomesLista();
   
@@ -1257,7 +1379,6 @@ function saveExWorkout(){
     toast('⚠️ Por favor, digite o nome do treino');
     return;
   }
-  // NOVO: Validação para garantir que haja pelo menos um exercício
   if(tempExNomes.length === 0){
     toast('⚠️ Adicione pelo menos um nome de exercício');
     return;
@@ -1274,7 +1395,7 @@ function saveExWorkout(){
     repeticoes: parseInt(q('exRepeticoes').value) || 10,
     rodadas: parseInt(q('exRodadas').value) || 3,
     tempoDescansoRodada: parseInt(q('exTempoDescansoRodada').value) || 60,
-    exercicios: [...tempExNomes], // NOVO: Salvar array de exercícios
+    exercicios: [...tempExNomes],
     hasMusic: existingWorkout ? !!existingWorkout.hasMusic : false,
     musicName: existingWorkout ? (existingWorkout.musicName || null) : null
   };
@@ -1324,7 +1445,7 @@ async function startExWorkout(id){
   
   exCurrentRound = 1;
   exCurrentRep = 1;
-  exCurrentExerciseIndex = 0; // NOVO: Iniciar no primeiro exercício
+  exCurrentExerciseIndex = 0;
   exCurrentPhase = 'preparar';
   exCurrentTime = 3;
   exTotalTime = 3;
@@ -1352,7 +1473,6 @@ async function startExWorkout(id){
   q('exTotalRounds').textContent = exCurrentWorkout.rodadas;
   q('exCurrentRound').textContent = exCurrentRound;
   
-  // NOVO: Atualizar contadores para refletir a lista de exercícios
   const totalEx = exCurrentWorkout.exercicios ? exCurrentWorkout.exercicios.length : 1;
   q('exTotalReps').textContent = totalEx;
   q('exCurrentRep').textContent = exCurrentExerciseIndex + 1;
@@ -1410,7 +1530,7 @@ function pauseExTimer(){
 function resetExTimer(){
   pauseExTimer();
   exCurrentRound = 1;
-  exCurrentExerciseIndex = 0; // NOVO: Resetar índice
+  exCurrentExerciseIndex = 0;
   exCurrentPhase = 'preparar';
   exCurrentTime = 3;
   exTotalTime = 3;
@@ -1439,14 +1559,11 @@ function nextExPhase(){
     exCurrentTime = exCurrentWorkout.tempoExercicio;
     exCurrentExerciseIndex = 0;
   } else if(exCurrentPhase === 'exercicio'){
-    // Finalizou o exercício atual
     if(exCurrentExerciseIndex < totalEx - 1){
-      // Avança para o próximo exercício na lista
       exCurrentExerciseIndex++;
       exCurrentPhase = 'descanso';
       exCurrentTime = exCurrentWorkout.tempoDescanso;
     } else {
-      // Era o último exercício da lista
       if(exCurrentRound < exCurrentWorkout.rodadas){
         exCurrentPhase = 'descanso_rodada';
         exCurrentTime = exCurrentWorkout.tempoDescansoRodada;
@@ -1460,13 +1577,12 @@ function nextExPhase(){
     exCurrentTime = exCurrentWorkout.tempoExercicio;
   } else if(exCurrentPhase === 'descanso_rodada'){
     exCurrentRound++;
-    exCurrentExerciseIndex = 0; // NOVO: Reinicia do primeiro exercício na nova rodada
+    exCurrentExerciseIndex = 0;
     exCurrentPhase = 'exercicio';
     exCurrentTime = exCurrentWorkout.tempoExercicio;
     q('exCurrentRound').textContent = exCurrentRound;
   }
   
-  // NOVO: Atualizar display de progresso do exercício
   q('exCurrentRep').textContent = exCurrentExerciseIndex + 1;
   q('exTotalReps').textContent = totalEx;
   
@@ -1508,7 +1624,6 @@ function updateExTimerDisplay(){
   let phaseText = '';
   let progress = 0;
   
-  // NOVO: Atualizar o nome do exercício atual na tela
   const exerciseNameEl = q('exCurrentExerciseName');
   if(exerciseNameEl && exCurrentWorkout && exCurrentWorkout.exercicios) {
     const currentExName = exCurrentWorkout.exercicios[exCurrentExerciseIndex] || 'Exercício';
@@ -1547,7 +1662,7 @@ document.addEventListener('change', function(e) {
 document.addEventListener('DOMContentLoaded', () => {
   renderAll();
   syncVolumeControls();
-  renderExNomesLista(); // NOVO: Inicializar lista vazia na configuração
+  renderExNomesLista();
 });
 </script>
 </body>
