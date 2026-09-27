@@ -394,20 +394,25 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
 
   <!-- ============ CRONÓMETRO DE EXERCÍCIOS ============ -->
   <section id="screen-exercicios" class="screen">
-    <h1 class="page-title" style="display:none;">CRONÓMETRO</h1>
+    <h1 class="page-title" style="display:none">CRONÓMETRO</h1>
     
     <!-- Banner Superior -->
     <div class="ex-top-banner">
       <div class="ex-banner-title">Cronómetro para Exercícios</div>
-      <div class="ex-banner-sub" style="flex-direction: column; align-items: center; gap: 12px; padding: 16px;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <div class="ex-no-equip">🚫</div>
-          SAUDE EM DIA
-        </div>
-        <button class="btn primary" onclick="window.open('https://darebee.com/workout.html#', '_blank')" style="width: 100%; max-width: 320px; font-size: 15px; padding: 14px 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
-          🏋️ TREINO PERSONALIZADO
-        </button>
+      <div class="ex-banner-sub">
+        <div class="ex-no-equip">🚫</div>
+        SAUDE EM DIA
       </div>
+    </div>
+
+    <!-- Botões de Acesso Externo -->
+    <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:16px; padding: 0 4px;">
+      <a href="https://darebee.com/workout.html#" target="_blank" rel="noopener noreferrer" class="btn primary big block" style="text-decoration:none; justify-content:center; gap:8px;">
+        DEREBEE <span style="font-size:14px; opacity:0.8;">↗</span>
+      </a>
+      <a href="https://www.workout.cool/" target="_blank" rel="noopener noreferrer" class="btn ghost big block" style="text-decoration:none; justify-content:center; gap:8px;">
+        WORKOUT <span style="font-size:14px; opacity:0.8;">↗</span>
+      </a>
     </div>
 
     <!-- Imagem do Exercício -->
