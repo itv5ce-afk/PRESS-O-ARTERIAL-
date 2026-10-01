@@ -8,6 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🩺</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <title>Minha Saúde Digital</title>
 <style>
 :root{--bg:#262b3f;--card:#3a4159;--card2:#4a5170;--blue:#4d7cf3;--muted:#9aa3c0;--radius:22px}
@@ -219,6 +220,450 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
 /* ============ NOVO: EXIBIÇÃO DO EXERCÍCIO ATUAL ============ */
 .ex-current-exercise{font-size:18px;font-weight:800;color:#4ade80;margin:10px 0;min-height:28px;text-align:center;text-transform:uppercase;letter-spacing:0.5px;text-shadow:0 2px 8px rgba(74,222,128,0.2);}
 
+/* ============ iPACE APP SCOPED ============ */
+#screen-pace {
+  font-family: 'Rajdhani', sans-serif;
+  background: #05051a;
+  color: #ffffff;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  padding-bottom: 80px;
+}
+#screen-pace::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(0, 240, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(255, 0, 229, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(179, 71, 255, 0.1) 0%, transparent 60%);
+  z-index: -2;
+  animation: bgShift 15s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+#screen-pace::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-image: 
+    linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+  z-index: -1;
+  transform: perspective(500px) rotateX(60deg);
+  transform-origin: center top;
+  opacity: 0.4;
+  pointer-events: none;
+}
+#screen-pace .pace-container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 20px 16px 40px;
+  position: relative;
+  z-index: 1;
+}
+#screen-pace .pace-header {
+  text-align: center;
+  padding: 30px 0 20px;
+  position: relative;
+}
+#screen-pace .pace-logo {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  background: linear-gradient(135deg, #00f0ff, #ff00e5, #b347ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.5));
+  animation: logoGlow 3s ease-in-out infinite alternate;
+}
+#screen-pace .pace-tagline {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 6px;
+  color: #a0a0c0;
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+#screen-pace .pace-tagline::before, #screen-pace .pace-tagline::after {
+  content: '—';
+  margin: 0 8px;
+  color: #00f0ff;
+}
+#screen-pace .pace-card {
+  background: rgba(15, 15, 45, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 24px;
+  padding: 28px 22px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+#screen-pace .pace-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 2px;
+  background: linear-gradient(90deg, transparent, #00f0ff, transparent);
+  animation: scanline 4s linear infinite;
+}
+#screen-pace .pace-card-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 3px;
+  color: #00f0ff;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#screen-pace .pace-card-title::before {
+  content: '';
+  width: 8px; height: 8px;
+  background: #00f0ff;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #00f0ff;
+  animation: pulse 2s ease-in-out infinite;
+}
+#screen-pace .pace-input-group {
+  margin-bottom: 18px;
+}
+#screen-pace .pace-input-label {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: #a0a0c0;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+#screen-pace .pace-input-field {
+  width: 100%;
+  padding: 14px 18px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 12px;
+  color: #ffffff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  outline: none;
+  transition: all 0.3s ease;
+}
+#screen-pace .pace-input-field:focus {
+  border-color: #00f0ff;
+  box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.15), 0 0 20px rgba(0, 240, 255, 0.2);
+  background: rgba(0, 240, 255, 0.05);
+}
+#screen-pace .pace-input-field::placeholder {
+  color: rgba(160, 160, 192, 0.4);
+  font-weight: 400;
+}
+#screen-pace .pace-time-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+#screen-pace .pace-time-input-wrapper {
+  position: relative;
+}
+#screen-pace .pace-time-input-wrapper .pace-input-field {
+  text-align: center;
+  padding: 14px 8px;
+}
+#screen-pace .pace-time-input-wrapper::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.65rem;
+  color: #a0a0c0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+#screen-pace .pace-btn-calculate {
+  width: 100%;
+  padding: 18px;
+  margin-top: 10px;
+  background: linear-gradient(135deg, #00f0ff, #ff00e5);
+  border: none;
+  border-radius: 14px;
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+}
+#screen-pace .pace-btn-calculate::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.6s ease;
+}
+#screen-pace .pace-btn-calculate:hover::before {
+  left: 100%;
+}
+#screen-pace .pace-btn-calculate:active {
+  transform: scale(0.97);
+  box-shadow: 0 0 15px rgba(255, 0, 229, 0.6);
+}
+#screen-pace .pace-result-card {
+  display: none;
+  animation: slideIn 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+#screen-pace .pace-result-card.show {
+  display: block;
+}
+#screen-pace .pace-display {
+  text-align: center;
+  padding: 20px 0;
+  position: relative;
+}
+#screen-pace .pace-label {
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+  color: #a0a0c0;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+#screen-pace .pace-value {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #00f0ff, #ff00e5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.5));
+}
+#screen-pace .pace-unit {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  color: #00f0ff;
+  letter-spacing: 2px;
+  margin-top: 8px;
+}
+#screen-pace .pace-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 20px;
+}
+#screen-pace .pace-stat-box {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+}
+#screen-pace .pace-stat-value {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #00f0ff;
+  margin-bottom: 4px;
+}
+#screen-pace .pace-stat-label {
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  color: #a0a0c0;
+  text-transform: uppercase;
+}
+#screen-pace .pace-projections {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+#screen-pace .pace-projection-item {
+  background: rgba(0, 0, 0, 0.3);
+  border-left: 3px solid #ff00e5;
+  padding: 12px 14px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+#screen-pace .pace-projection-item:hover {
+  background: rgba(255, 0, 229, 0.08);
+  transform: translateX(3px);
+}
+#screen-pace .pace-projection-name {
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  color: #a0a0c0;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+#screen-pace .pace-projection-time {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ff00e5;
+}
+#screen-pace .pace-history-item {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 240, 255, 0.1);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+#screen-pace .pace-history-item:hover {
+  border-color: #00f0ff;
+  background: rgba(0, 240, 255, 0.05);
+}
+#screen-pace .pace-history-info {
+  flex: 1;
+}
+#screen-pace .pace-history-pace {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #00f0ff;
+}
+#screen-pace .pace-history-details {
+  font-size: 0.75rem;
+  color: #a0a0c0;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+#screen-pace .pace-history-delete {
+  background: none;
+  border: none;
+  color: #a0a0c0;
+  cursor: pointer;
+  padding: 6px;
+  font-size: 1.2rem;
+  transition: all 0.2s ease;
+}
+#screen-pace .pace-history-delete:hover {
+  color: #ff00e5;
+  transform: scale(1.2);
+}
+#screen-pace .pace-empty-history {
+  text-align: center;
+  padding: 20px;
+  color: #a0a0c0;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}
+#screen-pace .pace-btn-clear {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  background: transparent;
+  border: 1px solid rgba(255, 0, 229, 0.3);
+  border-radius: 10px;
+  color: #ff00e5;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+#screen-pace .pace-btn-clear:hover {
+  background: rgba(255, 0, 229, 0.1);
+  border-color: #ff00e5;
+}
+#screen-pace .pace-footer {
+  text-align: center;
+  padding: 20px 0;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  color: #a0a0c0;
+  text-transform: uppercase;
+}
+#screen-pace .pace-footer span {
+  color: #00f0ff;
+}
+#screen-pace .pace-toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: rgba(15, 15, 45, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid #00f0ff;
+  color: #ffffff;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 1000;
+}
+#screen-pace .pace-toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+#screen-pace .pace-back-btn {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: #ffffff;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+#screen-pace .pace-back-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@keyframes bgShift {
+  0% { transform: scale(1) rotate(0deg); }
+  100% { transform: scale(1.1) rotate(3deg); }
+}
+@keyframes logoGlow {
+  from { filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.4)); }
+  to { filter: drop-shadow(0 0 30px rgba(255, 0, 229, 0.6)); }
+}
+@keyframes scanline {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @media(max-width:420px){
 .goal-body{flex-wrap:wrap;justify-content:center}
 .goal-weights{flex:1 1 100%;flex-direction:row;justify-content:space-around}
@@ -405,6 +850,11 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
       </div>
     </div>
 
+    <!-- NOVO: BOTÃO PACE -->
+    <button class="btn primary big block" style="margin-bottom:16px; background: linear-gradient(135deg, #00f0ff, #ff00e5); box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);" onclick="show('pace')">
+      ⚡ iPACE - Calculadora de Pace
+    </button>
+
     <!-- Botões de Acesso Externo -->
     <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:16px; padding: 0 4px;">
       <a href="https://darebee.com/workout.html#" target="_blank" rel="noopener noreferrer" class="btn primary big block" style="text-decoration:none; justify-content:center; gap:8px;">
@@ -543,6 +993,110 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
         <span class="vol-value" id="exBeepVolumeVal">50%</span>
       </div>
     </div>
+  </section>
+
+  <!-- ============ iPACE APP ============ -->
+  <section id="screen-pace" class="screen">
+    <div class="pace-container">
+      <button class="pace-back-btn" onclick="show('exercicios')">← Voltar para Exercícios</button>
+      
+      <header class="pace-header">
+        <h1 class="pace-logo">iPACE</h1>
+        <p class="pace-tagline">Run Beyond Limits</p>
+      </header>
+
+      <div class="pace-card">
+        <h2 class="pace-card-title">Dados da Corrida</h2>
+
+        <div class="pace-input-group">
+          <label class="pace-input-label" for="pace-distance">Distância Percorrida</label>
+          <input type="number" id="pace-distance" class="pace-input-field" placeholder="Ex: 5.0" step="0.01" min="0.01" inputmode="decimal">
+        </div>
+
+        <div class="pace-input-group">
+          <label class="pace-input-label">Tempo Gasto</label>
+          <div class="pace-time-inputs">
+            <div class="pace-time-input-wrapper" data-label="Horas">
+              <input type="number" id="pace-hours" class="pace-input-field" placeholder="00" min="0" max="23" inputmode="numeric">
+            </div>
+            <div class="pace-time-input-wrapper" data-label="Minutos">
+              <input type="number" id="pace-minutes" class="pace-input-field" placeholder="00" min="0" max="59" inputmode="numeric">
+            </div>
+            <div class="pace-time-input-wrapper" data-label="Segundos">
+              <input type="number" id="pace-seconds" class="pace-input-field" placeholder="00" min="0" max="59" inputmode="numeric">
+            </div>
+          </div>
+        </div>
+
+        <button class="pace-btn-calculate" onclick="calculatePace()">
+          ⚡ Calcular Pace
+        </button>
+      </div>
+
+      <div class="pace-card pace-result-card" id="pace-resultCard">
+        <h2 class="pace-card-title">Resultado</h2>
+
+        <div class="pace-display">
+          <div class="pace-label">Seu Pace</div>
+          <div class="pace-value" id="pace-paceValue">0:00</div>
+          <div class="pace-unit">MIN / KM</div>
+        </div>
+
+        <div class="pace-stats-grid">
+          <div class="pace-stat-box">
+            <div class="pace-stat-value" id="pace-speedValue">0.0</div>
+            <div class="pace-stat-label">KM/H</div>
+          </div>
+          <div class="pace-stat-box">
+            <div class="pace-stat-value" id="pace-metersPerSec">0.0</div>
+            <div class="pace-stat-label">M/S</div>
+          </div>
+          <div class="pace-stat-box">
+            <div class="pace-stat-value" id="pace-totalSeconds">0</div>
+            <div class="pace-stat-label">Segundos Total</div>
+          </div>
+          <div class="pace-stat-box">
+            <div class="pace-stat-value" id="pace-kmPerMin">0.00</div>
+            <div class="pace-stat-label">KM/MIN</div>
+          </div>
+        </div>
+
+        <h2 class="pace-card-title" style="margin-top: 24px;">Projeções</h2>
+        <div class="pace-projections">
+          <div class="pace-projection-item">
+            <div class="pace-projection-name">5 KM</div>
+            <div class="pace-projection-time" id="pace-proj5k">--:--</div>
+          </div>
+          <div class="pace-projection-item">
+            <div class="pace-projection-name">10 KM</div>
+            <div class="pace-projection-time" id="pace-proj10k">--:--</div>
+          </div>
+          <div class="pace-projection-item">
+            <div class="pace-projection-name">21 KM</div>
+            <div class="pace-projection-time" id="pace-proj21k">--:--</div>
+          </div>
+          <div class="pace-projection-item">
+            <div class="pace-projection-name">42 KM</div>
+            <div class="pace-projection-time" id="pace-proj42k">--:--</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pace-card">
+        <h2 class="pace-card-title">Histórico</h2>
+        <div id="pace-historyList">
+          <div class="pace-empty-history">Nenhum cálculo registrado</div>
+        </div>
+        <button class="pace-btn-clear" id="pace-btnClear" onclick="clearPaceHistory()" style="display:none;">
+          🗑 Limpar Histórico
+        </button>
+      </div>
+
+      <div class="pace-footer">
+        <span>iPACE</span> © 2026 • Futuro do Running
+      </div>
+    </div>
+    <div class="pace-toast" id="pace-toast"></div>
   </section>
 
 </div>
@@ -1100,7 +1654,7 @@ function goExercicios(){show('exercicios');loadExWorkouts();}
 function showExConfig(){resetExForm(); show('ex-config');}
 function showExTimer(){show('ex-timer');}
 function show(s){
-  if (s !== 'ex-timer' && exCurrentAudio) {
+  if (s !== 'ex-timer' && s !== 'pace' && exCurrentAudio) {
     exCurrentAudio.pause();
     if (exCurrentAudio.src) URL.revokeObjectURL(exCurrentAudio.src);
     exCurrentAudio = null;
@@ -1111,11 +1665,14 @@ function show(s){
   q('screen-exercicios').classList.toggle('active',s==='exercicios');
   q('screen-ex-config').classList.toggle('active',s==='ex-config');
   q('screen-ex-timer').classList.toggle('active',s==='ex-timer');
+  q('screen-pace').classList.toggle('active',s==='pace');
+  
   q('nav-home').classList.toggle('active',s==='home');
   q('nav-hist').classList.toggle('active',s==='hist');
-  q('nav-ex').classList.toggle('active',s==='exercicios'||s==='ex-config'||s==='ex-timer');
+  q('nav-ex').classList.toggle('active',s==='exercicios'||s==='ex-config'||s==='ex-timer'||s==='pace');
   
   if(s === 'ex-timer') syncVolumeControls();
+  if(s === 'pace') renderPaceHistory();
   
   window.scrollTo({top:0});
 }
@@ -1669,10 +2226,148 @@ document.addEventListener('change', function(e) {
   }
 });
 
+/* ============ iPACE APP LOGIC ============ */
+function calculatePace() {
+  const distance = parseFloat(document.getElementById('pace-distance').value);
+  const hours = parseInt(document.getElementById('pace-hours').value) || 0;
+  const minutes = parseInt(document.getElementById('pace-minutes').value) || 0;
+  const seconds = parseInt(document.getElementById('pace-seconds').value) || 0;
+
+  if (!distance || distance <= 0) {
+    showPaceToast('⚠ Informe a distância em KM');
+    return;
+  }
+
+  const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+  if (totalSeconds <= 0) {
+    showPaceToast('⚠ Informe o tempo gasto');
+    return;
+  }
+
+  const totalMinutes = totalSeconds / 60;
+  const paceMinPerKm = totalMinutes / distance;
+  const paceMinutes = Math.floor(paceMinPerKm);
+  const paceSeconds = Math.round((paceMinPerKm - paceMinutes) * 60);
+
+  const speedKmh = distance / (totalSeconds / 3600);
+  const speedMs = (distance * 1000) / totalSeconds;
+  const kmPerMin = distance / totalMinutes;
+
+  document.getElementById('pace-paceValue').textContent = 
+    `${paceMinutes}:${paceSeconds.toString().padStart(2, '0')}`;
+  document.getElementById('pace-speedValue').textContent = speedKmh.toFixed(1);
+  document.getElementById('pace-metersPerSec').textContent = speedMs.toFixed(2);
+  document.getElementById('pace-totalSeconds').textContent = totalSeconds;
+  document.getElementById('pace-kmPerMin').textContent = kmPerMin.toFixed(2);
+
+  document.getElementById('pace-proj5k').textContent = formatPaceTime(paceMinPerKm * 5);
+  document.getElementById('pace-proj10k').textContent = formatPaceTime(paceMinPerKm * 10);
+  document.getElementById('pace-proj21k').textContent = formatPaceTime(paceMinPerKm * 21.0975);
+  document.getElementById('pace-proj42k').textContent = formatPaceTime(paceMinPerKm * 42.195);
+
+  const resultCard = document.getElementById('pace-resultCard');
+  resultCard.classList.add('show');
+  resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  saveToPaceHistory({
+    distance: distance,
+    time: formatPaceTime(totalMinutes),
+    pace: `${paceMinutes}:${paceSeconds.toString().padStart(2, '0')}`,
+    speed: speedKmh.toFixed(1),
+    timestamp: Date.now()
+  });
+
+  showPaceToast('✓ Pace calculado com sucesso!');
+}
+
+function formatPaceTime(totalMinutes) {
+  const h = Math.floor(totalMinutes / 60);
+  const m = Math.floor(totalMinutes % 60);
+  const s = Math.round((totalMinutes * 60) % 60);
+  if (h > 0) {
+    return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  }
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+function saveToPaceHistory(entry) {
+  let history = JSON.parse(localStorage.getItem('ipace_history') || '[]');
+  history.unshift(entry);
+  if (history.length > 20) history = history.slice(0, 20);
+  localStorage.setItem('ipace_history', JSON.stringify(history));
+  renderPaceHistory();
+}
+
+function renderPaceHistory() {
+  const history = JSON.parse(localStorage.getItem('ipace_history') || '[]');
+  const container = document.getElementById('pace-historyList');
+  const btnClear = document.getElementById('pace-btnClear');
+
+  if (!container) return;
+
+  if (history.length === 0) {
+    container.innerHTML = '<div class="pace-empty-history">Nenhum cálculo registrado</div>';
+    if(btnClear) btnClear.style.display = 'none';
+    return;
+  }
+
+  if(btnClear) btnClear.style.display = 'block';
+  container.innerHTML = history.map((item, index) => `
+    <div class="pace-history-item">
+      <div class="pace-history-info">
+        <div class="pace-history-pace">${item.pace} min/km</div>
+        <div class="pace-history-details">
+          ${item.distance} km • ${item.time} • ${item.speed} km/h
+        </div>
+      </div>
+      <button class="pace-history-delete" onclick="deletePaceHistory(${index})" title="Excluir">×</button>
+    </div>
+  `).join('');
+}
+
+function deletePaceHistory(index) {
+  let history = JSON.parse(localStorage.getItem('ipace_history') || '[]');
+  history.splice(index, 1);
+  localStorage.setItem('ipace_history', JSON.stringify(history));
+  renderPaceHistory();
+  showPaceToast('Registro removido');
+}
+
+function clearPaceHistory() {
+  if (confirm('Deseja realmente limpar todo o histórico?')) {
+    localStorage.removeItem('ipace_history');
+    renderPaceHistory();
+    showPaceToast('Histórico limpo');
+  }
+}
+
+function showPaceToast(message) {
+  const toast = document.getElementById('pace-toast');
+  if(!toast) return;
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   renderAll();
   syncVolumeControls();
   renderExNomesLista();
+  
+  // iPACE auto-advance
+  ['pace-hours', 'pace-minutes', 'pace-seconds'].forEach((id, idx, arr) => {
+    const input = document.getElementById(id);
+    if(input) {
+      input.addEventListener('input', (e) => {
+        if (e.target.value.length >= 2 && idx < arr.length - 1) {
+          document.getElementById(arr[idx + 1]).focus();
+        }
+      });
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') calculatePace();
+      });
+    }
+  });
 });
 </script>
 </body>
