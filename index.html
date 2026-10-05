@@ -751,7 +751,7 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
 
     <!-- IMC -->
     <div class="card imc-card">
-      <div class="imc-head">📐 IMC & Peso Ideal</div>
+      <div class="imc-head"> IMC & Peso Ideal</div>
       <div class="imc-grid">
         <div class="imc-box"><span class="imc-label">IMC</span><div class="imc-val" id="v-imc">--</div></div>
         <div class="imc-box"><span class="imc-label">Peso ideal</span><div class="imc-val green" id="v-pesoideal">--</div></div>
@@ -828,12 +828,20 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
   <section id="screen-hist" class="screen">
     <h1 class="page-title">HISTÓRICO</h1>
     <div class="tabs" id="tabs"></div>
+    
+    <!-- NOVOS BOTÕES DE FILTRO DE TEMPO -->
+    <div style="display:flex; gap:8px; margin:12px 0; overflow-x:auto; padding:2px; -webkit-overflow-scrolling:touch;">
+      <button class="btn sm ghost" id="btn-semana" onclick="setTimeFilter('semana')" style="flex:1; min-width:80px;">📅 Semana</button>
+      <button class="btn sm ghost" id="btn-mes" onclick="setTimeFilter('mes')" style="flex:1; min-width:80px;">📆 Mês</button>
+      <button class="btn sm ghost" id="btn-ano" onclick="setTimeFilter('ano')" style="flex:1; min-width:80px;">📅 Ano</button>
+    </div>
+    
     <div class="card chart-card"><canvas id="chart"></canvas></div>
     <div class="stats" id="stats"></div>
     <div id="list"></div>
     <div class="actions-row">
       <button class="btn ghost sm" onclick="exportCSV()">⬇ Exportar CSV</button>
-      <button class="btn danger sm" onclick="clearAll()">🗑 Limpar tudo</button>
+      <button class="btn danger sm" onclick="clearAll()"> Limpar tudo</button>
     </div>
   </section>
 
@@ -858,7 +866,7 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
     <!-- Botões de Acesso Externo -->
     <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:16px; padding: 0 4px;">
       <a href="https://darebee.com/workout.html#" target="_blank" rel="noopener noreferrer" class="btn primary big block" style="text-decoration:none; justify-content:center; gap:8px;">
-        DEREBEE <span style="font-size:14px; opacity:0.8;">↗</span>
+        DEREBEE <span style="font-size:14px; opacity:0.8;"></span>
       </a>
       <a href="https://www.workout.cool/" target="_blank" rel="noopener noreferrer" class="btn ghost big block" style="text-decoration:none; justify-content:center; gap:8px;">
         WORKOUT <span style="font-size:14px; opacity:0.8;">↗</span>
@@ -886,7 +894,7 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
     <h1 class="page-title">CONFIGURAR TREINO</h1>
     
     <div class="ex-config-card">
-      <div class="ex-config-title">⚙️ Configuração do Treino</div>
+      <div class="ex-config-title">️ Configuração do Treino</div>
       
       <div class="field">
         <label>Nome do Treino</label>
@@ -935,7 +943,7 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
         <label>Música de Fundo (Opcional)</label>
         <input type="file" id="exMusicFile" accept=".mp3, .mp4, .m4a, audio/*, video/mp4" style="padding:12px 14px;background:var(--card2);border:none;border-radius:14px;color:#fff;font-size:14px;font-weight:700;width:100%;outline:none;cursor:pointer;">
         <div id="exMusicFileName" class="muted" style="font-size:12px;margin-top:6px;font-weight:600;"></div>
-        <div class="muted" style="font-size:11px;margin-top:4px;font-weight:600;">💾 A música fica salva com o treino — não precisa selecionar novamente.</div>
+        <div class="muted" style="font-size:11px;margin-top:4px;font-weight:600;"> A música fica salva com o treino — não precisa selecionar novamente.</div>
       </div>
 
       <div style="margin-top:20px;display:flex;gap:10px">
@@ -987,7 +995,7 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
         <span class="vol-value" id="exMusicVolumeVal">50%</span>
       </div>
       <div class="vol-row">
-        <span class="vol-icon">🔔</span>
+        <span class="vol-icon"></span>
         <span class="vol-label">Bip</span>
         <input type="range" id="exBeepVolumeSlider" class="vol-slider" min="0" max="100" step="1" value="50" oninput="onBeepVolumeChange(this.value)">
         <span class="vol-value" id="exBeepVolumeVal">50%</span>
@@ -1029,7 +1037,7 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
         </div>
 
         <button class="pace-btn-calculate" onclick="calculatePace()">
-          ⚡ Calcular Pace
+           Calcular Pace
         </button>
       </div>
 
@@ -1116,6 +1124,8 @@ background:linear-gradient(90deg,#f87171 0%,#f87171 7.1%,#fb923c 7.1%,#fb923c 16
 /* ================= DADOS ================= */
 const KEY='minhaSaudeDB_v1';
 let db=loadDB();
+let currentTimeFilter = 'todos'; // 'todos', 'semana', 'mes', 'ano'
+
 function loadDB(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d){d.peso=d.peso||[];d.pressao=d.pressao||[];d.acucar=d.acucar||[];d.fc=d.fc||[];d.altura=d.altura||[];d.agua=d.agua||[];d.metaAgua=d.metaAgua||2000;d.exWorkouts=d.exWorkouts||[];d.metaPesoInicial=d.metaPesoInicial||null;d.metaPesoObjetivo=d.metaPesoObjetivo||null;d.metaDataInicio=d.metaDataInicio||null;
   if(typeof d.exMusicVolume!=='number')d.exMusicVolume=50;
   if(typeof d.exBeepVolume!=='number')d.exBeepVolume=50;
@@ -1130,6 +1140,57 @@ const fmtTime=t=>{const d=new Date(t);return String(d.getHours()).padStart(2,'0'
 const fmtDate=t=>{const d=new Date(t);return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()+' '+fmtTime(t);};
 const fmtDateShort=t=>{const d=new Date(t);return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();};
 const hoje=()=>{const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();};
+
+/* ============ FILTRO DE TEMPO ============ */
+function setTimeFilter(filter){
+  currentTimeFilter = filter;
+  
+  // Atualiza estilo dos botões
+  ['semana', 'mes', 'ano'].forEach(f => {
+    const btn = q(`btn-${f}`);
+    if(btn){
+      if(f === filter){
+        btn.style.background = 'var(--blue)';
+        btn.style.color = '#fff';
+      } else {
+        btn.style.background = 'var(--card2)';
+        btn.style.color = 'var(--muted)';
+      }
+    }
+  });
+  
+  renderHistory();
+}
+
+function getFilteredRecords(records, filter){
+  if(filter === 'todos') return records;
+  
+  const now = new Date();
+  const today = hoje();
+  const recordsFiltered = [...records];
+  
+  if(filter === 'semana'){
+    // Últimos 7 dias
+    const sevenDaysAgo = today - (7 * 24 * 60 * 60 * 1000);
+    return recordsFiltered.filter(r => r.d >= sevenDaysAgo);
+  }
+  
+  if(filter === 'mes'){
+    // Mês atual
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999).getTime();
+    return recordsFiltered.filter(r => r.d >= startOfMonth && r.d <= endOfMonth);
+  }
+  
+  if(filter === 'ano'){
+    // Ano atual
+    const startOfYear = new Date(now.getFullYear(), 0, 1).getTime();
+    const endOfYear = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999).getTime();
+    return recordsFiltered.filter(r => r.d >= startOfYear && r.d <= endOfYear);
+  }
+  
+  return recordsFiltered;
+}
 
 /* ============ INDEXEDDB PARA ÁUDIO ============ */
 const AUDIO_DB_NAME = 'minhaSaudeAudioDB';
@@ -1146,7 +1207,7 @@ function openAudioDB(){
       }
     };
     req.onsuccess = e => resolve(e.target.result);
-    req.onerror = e => { audioDBPromise=null; reject(e.target.error); };
+    req.onerror = e => reject(e.target.error);
   });
   return audioDBPromise;
 }
@@ -1364,13 +1425,13 @@ function openCardapioSemanal(){
     <div class="menu-scroll">
       <div class="menu-day">
         <h3>#DIA 1 (DOMINGO)</h3>
-        <div class="menu-meal"><b>Café☕️🍳🥪:</b><br>2 ovos, 2 fatias de pão integral, 100g de banana, 1 scoop de whey, 1 scoop de creatina, café sem açúcar</div>
+        <div class="menu-meal"><b>Café☕️🍳:</b><br>2 ovos, 2 fatias de pão integral, 100g de banana, 1 scoop de whey, 1 scoop de creatina, café sem açúcar</div>
         <div class="menu-meal"><b>Almoço🥗🍗:</b><br>200g de Frango assado, 50g de arroz cozido, 50g de feijão cozido, salada à vontade</div>
         <div class="menu-meal"><b>Jantar🥘🥚:</b><br>500ml de Canja de frango com legumes, 200g de proteínas ou 3 ovos cozidos</div>
       </div>
       <div class="menu-day">
         <h3>#DIA 2 (SEGUNDA)</h3>
-        <div class="menu-meal"><b>Café☕️🍳🥪:</b><br>2 ovos, 2 fatias de pão integral, 100g de banana, 1 scoop de whey, 1 scoop de creatina, café sem açúcar</div>
+        <div class="menu-meal"><b>Café☕️🥪:</b><br>2 ovos, 2 fatias de pão integral, 100g de banana, 1 scoop de whey, 1 scoop de creatina, café sem açúcar</div>
         <div class="menu-meal"><b>Almoço🥗🥩:</b><br>200g de Carne moída magra, 50g de arroz, 50g de feijão, salada à vontade</div>
         <div class="menu-meal"><b>Jantar🥗🍗:</b><br>200g de Frango desfiado, 250g de abóbora, legumes</div>
       </div>
@@ -1382,32 +1443,32 @@ function openCardapioSemanal(){
       </div>
       <div class="menu-day">
         <h3>#DIA 4 (QUARTA)</h3>
-        <div class="menu-meal"><b>Café🥚🍌🍓:</b><br>3 ovos mexidos, 100g de banana, 100g de morangos, café sem açúcar</div>
-        <div class="menu-meal"><b>Almoço🥗🍗:</b><br>200g de Peito de frango, 50g de arroz, 50g feijão, salada à vontade</div>
-        <div class="menu-meal"><b>Jantar🥘🍗:</b><br>500ml Canja com bastante frango e legumes, 2 ovos</div>
+        <div class="menu-meal"><b>Café🍌🍓:</b><br>3 ovos mexidos, 100g de banana, 100g de morangos, café sem açúcar</div>
+        <div class="menu-meal"><b>Almoço🍗:</b><br>200g de Peito de frango, 50g de arroz, 50g feijão, salada à vontade</div>
+        <div class="menu-meal"><b>Jantar🍗:</b><br>500ml Canja com bastante frango e legumes, 2 ovos</div>
       </div>
       <div class="menu-day">
         <h3>#DIA 5 (QUINTA)</h3>
-        <div class="menu-meal"><b>Café🥤🍌🍓:</b><br>100g de banana, 100g de morangos, 1 scoop de whey, 1 scoop de creatina, 300ml de água</div>
+        <div class="menu-meal"><b>Café🥤🍓:</b><br>100g de banana, 100g de morangos, 1 scoop de whey, 1 scoop de creatina, 300ml de água</div>
         <div class="menu-meal"><b>Almoço🥗🥩:</b><br>200g de Carne bovina magra, 50g arroz, 50g feijão, salada à vontade</div>
         <div class="menu-meal"><b>Jantar🥘🍗:</b><br>100g de Frango, 200g de batata-doce cozida, legumes</div>
       </div>
       <div class="menu-day">
         <h3>#DIA 6 (SEXTA)</h3>
         <div class="menu-meal"><b>Café🍳🥪🍌🥤:</b><br>2 ovos, 2 fatias de pão integral, 100g de banana, 1 scoop de whey, 1 scoop de creatina</div>
-        <div class="menu-meal"><b>Almoço🥗🍗:</b><br>200g Frango, 50g arroz, 50g feijão, salada à vontade</div>
+        <div class="menu-meal"><b>Almoço🥗:</b><br>200g Frango, 50g arroz, 50g feijão, salada à vontade</div>
         <div class="menu-meal"><b>Jantar🥘🥚:</b><br>500ml de Canja de frango, 200g de proteínas ou 3 ovos cozidos</div>
       </div>
       <div class="menu-day">
         <h3>#DIA 7 (SÁBADO)</h3>
-        <div class="menu-meal"><b>Café🥤🍌🍓:</b><br>100g de banana, 100g de morangos, 1 scoop de whey, 1 scoop de creatina, 300ml de água</div>
-        <div class="menu-meal"><b>Almoço🥗🍗:</b><br>200g de Frango assado, 50g de arroz, 50g de feijão, salada à vontade</div>
+        <div class="menu-meal"><b>Café🥤🍓:</b><br>100g de banana, 100g de morangos, 1 scoop de whey, 1 scoop de creatina, 300ml de água</div>
+        <div class="menu-meal"><b>Almoço🥗:</b><br>200g de Frango assado, 50g de arroz, 50g de feijão, salada à vontade</div>
         <div class="menu-meal"><b>Jantar🍳🍗:</b><br>Omelete de 3 ovos, 100g de frango, 200g de abóbora/legumes</div>
       </div>
 
       <div class="menu-obs">
         <h3>OBSERVAÇÕES:</h3>
-        <p><b>🥗 Sua salada:</b> Pode manter praticamente todos os dias: couve, alface, tomate, cebola, alho, quiabo, limão, vinagre. Não precisa pesar as folhas. Cuidado apenas com o azeite: se usar, limite a aproximadamente 1 colher de chá (5 ml) por refeição, porque ele é bastante calórico.</p>
+        <p><b> Sua salada:</b> Pode manter praticamente todos os dias: couve, alface, tomate, cebola, alho, quiabo, limão, vinagre. Não precisa pesar as folhas. Cuidado apenas com o azeite: se usar, limite a aproximadamente 1 colher de chá (5 ml) por refeição, porque ele é bastante calórico.</p>
         <p><b>🍓 Frutas:</b> Caso você sinta fome, pode comer entre as refeições UMA FRUTA como: morangos, maçã, laranja, banana, uva, melancia, etc.</p>
         <p><b>💧 Água:</b> 3 litros por dia, pode manter como ponto de partida. Nos dias muito quentes ou de muito suor, pode precisar de mais.</p>
       </div>
@@ -1465,7 +1526,7 @@ function renderHome(){
 
 /* ================ HISTÓRICO ================ */
 const TABS=[
-  {id:'peso',name:'Peso',icon:'⚖️'},
+  {id:'peso',name:'Peso',icon:'️'},
   {id:'pressao',name:'Pressão',icon:'🩺'},
   {id:'acucar',name:'Açúcar',icon:'🩸'},
   {id:'fc',name:'Coração',icon:'❤️'},
@@ -1490,11 +1551,15 @@ function agruparAguaPorDia(registros){
 
 function renderHistory(){
   q('tabs').innerHTML=TABS.map(t=>`<button class="${t.id===curTab?'active':''}" onclick="setTab('${t.id}')">${t.icon} ${t.name}</button>`).join('');
+  
+  // Aplica o filtro de tempo
   let recs=[...db[curTab]].sort((a,b)=>b.d-a.d);
+  recs = getFilteredRecords(recs, currentTimeFilter);
+  
   let listItems=[];
 
   if(curTab==='agua'){
-    const dias = agruparAguaPorDia(db.agua);
+    const dias = agruparAguaPorDia(recs);
     if(dias.length){
       const totais = dias.map(d=>d.total);
       const min=Math.min(...totais), max=Math.max(...totais), med=totais.reduce((s,v)=>s+v,0)/totais.length;
@@ -1625,24 +1690,24 @@ function drawChartAgua(dias){
 /* ============= FORMULÁRIOS ============= */
 const FORMS={
  peso:{t:'Registrar Peso',i:'⚖️',h:`<div class="field"><label>Peso (kg)</label><input id="f-v" type="number" inputmode="decimal" step="0.1" min="1" max="400" placeholder="Ex.: 72.5" autocomplete="off"></div>`},
- pressao:{t:'Registrar Pressão Arterial',i:'🩺',h:`<div class="form-row"><div class="field"><label>Sistólica (mmHg)</label><input id="f-s" type="number" inputmode="numeric" min="40" max="260" placeholder="120"></div><div class="field"><label>Diastólica (mmHg)</label><input id="f-d" type="number" inputmode="numeric" min="20" max="200" placeholder="80"></div></div><div class="field"><label>Pulso (opcional, bpm)</label><input id="f-p" type="number" inputmode="numeric" min="20" max="250" placeholder="72"></div>`},
+ pressao:{t:'Registrar Pressão Arterial',i:'',h:`<div class="form-row"><div class="field"><label>Sistólica (mmHg)</label><input id="f-s" type="number" inputmode="numeric" min="40" max="260" placeholder="120"></div><div class="field"><label>Diastólica (mmHg)</label><input id="f-d" type="number" inputmode="numeric" min="20" max="200" placeholder="80"></div></div><div class="field"><label>Pulso (opcional, bpm)</label><input id="f-p" type="number" inputmode="numeric" min="20" max="250" placeholder="72"></div>`},
  acucar:{t:'Registrar Glicemia',i:'🩸',h:`<div class="field"><label>Glicose (mg/dL)</label><input id="f-v" type="number" inputmode="decimal" min="20" max="600" placeholder="Ex.: 95"></div><div class="field"><label>Contexto</label><select id="f-c"><option>Jejum</option><option>Antes da refeição</option><option>Após refeição</option><option>Antes de dormir</option></select></div>`},
  fc:{t:'Registrar Frequência Cardíaca',i:'❤️',h:`<div class="field"><label>Frequência (bpm)</label><input id="f-v" type="number" inputmode="numeric" min="20" max="250" placeholder="Ex.: 72"></div><div class="field"><label>Contexto</label><select id="f-c"><option>Repouso</option><option>Após exercício</option><option>Estresse</option></select></div>`},
- altura:{t:'Registrar Altura',i:'📏',h:`<div class="field"><label>Altura (cm)</label><input id="f-v" type="number" inputmode="decimal" step="0.1" min="30" max="250" placeholder="Ex.: 170" autocomplete="off"></div>`}
+ altura:{t:'Registrar Altura',i:'',h:`<div class="field"><label>Altura (cm)</label><input id="f-v" type="number" inputmode="decimal" step="0.1" min="30" max="250" placeholder="Ex.: 170" autocomplete="off"></div>`}
 };
 let curForm=null;
 function openForm(t){curForm=t;const f=FORMS[t];
   q('modalBox').innerHTML=`<div class="m-head"><span class="m-ico">${f.i}</span><h2>${f.t}</h2><button class="x" onclick="closeModal()">✕</button></div>${f.h}<div class="m-foot"><button class="btn ghost" onclick="closeModal()">Cancelar</button><button class="btn primary" onclick="saveForm()">💾 Salvar</button></div>`;
   q('overlay').classList.add('show');setTimeout(()=>{const el=document.querySelector('#modalBox input');if(el)el.focus();},300);}
-function openQuick(){q('modalBox').innerHTML=`<div class="m-head"><span class="m-ico">💙</span><h2>O que registrar?</h2><button class="x" onclick="closeModal()">✕</button></div><div class="quick-grid"><button class="quick-btn" onclick="openForm('peso')"><span class="qi">⚖️</span>Peso</button><button class="quick-btn" onclick="openForm('pressao')"><span class="qi">🩺</span>Pressão</button><button class="quick-btn" onclick="openForm('acucar')"><span class="qi">🩸</span>Açúcar</button><button class="quick-btn" onclick="openForm('fc')"><span class="qi">❤️</span>Coração</button><button class="quick-btn" onclick="openForm('altura')"><span class="qi">📏</span>Altura</button><button class="quick-btn" onclick="openAguaModal()"><span class="qi">💧</span>Água</button></div>`;q('overlay').classList.add('show');}
+function openQuick(){q('modalBox').innerHTML=`<div class="m-head"><span class="m-ico">💙</span><h2>O que registrar?</h2><button class="x" onclick="closeModal()">✕</button></div><div class="quick-grid"><button class="quick-btn" onclick="openForm('peso')"><span class="qi">⚖️</span>Peso</button><button class="quick-btn" onclick="openForm('pressao')"><span class="qi">🩺</span>Pressão</button><button class="quick-btn" onclick="openForm('acucar')"><span class="qi"></span>Açúcar</button><button class="quick-btn" onclick="openForm('fc')"><span class="qi">❤️</span>Coração</button><button class="quick-btn" onclick="openForm('altura')"><span class="qi"></span>Altura</button><button class="quick-btn" onclick="openAguaModal()"><span class="qi"></span>Água</button></div>`;q('overlay').classList.add('show');}
 function closeModal(){q('overlay').classList.remove('show');curForm=null;}
 const gv=id=>{const el=q(id);return el?el.value.trim():'';};
 function saveForm(){const t=curForm;if(!t)return;
-  if(t==='peso'){const v=parseFloat(gv('f-v').replace(',','.'));if(!v||v<1||v>400)return toast('⚠️ Peso inválido');db.peso.push({id:uid(),v,d:Date.now()});}
+  if(t==='peso'){const v=parseFloat(gv('f-v').replace(',','.'));if(!v||v<1||v>400)return toast('️ Peso inválido');db.peso.push({id:uid(),v,d:Date.now()});}
   else if(t==='pressao'){const s=parseInt(gv('f-s')),d=parseInt(gv('f-d')),p=gv('f-p')?parseInt(gv('f-p')):null;
     if(!s||s<40||s>260||!d||d<20||d>200)return toast('⚠️ Valores de pressão inválidos');
     if(p&&(p<20||p>250))return toast('⚠️ Pulso inválido');db.pressao.push({id:uid(),sys:s,dia:d,pul:p,d:Date.now()});}
-  else if(t==='acucar'){const v=parseFloat(gv('f-v').replace(',','.'));if(!v||v<20||v>600)return toast('⚠️ Glicemia inválida');db.acucar.push({id:uid(),v,ctx:gv('f-c'),d:Date.now()});}
+  else if(t==='acucar'){const v=parseFloat(gv('f-v').replace(',','.'));if(!v||v<20||v>600)return toast('️ Glicemia inválida');db.acucar.push({id:uid(),v,ctx:gv('f-c'),d:Date.now()});}
   else if(t==='fc'){const v=parseInt(gv('f-v'));if(!v||v<20||v>250)return toast('⚠️ Frequência inválida');db.fc.push({id:uid(),v,ctx:gv('f-c'),d:Date.now()});}
   else if(t==='altura'){const v=parseFloat(gv('f-v').replace(',','.'));if(!v||v<30||v>250)return toast('⚠️ Altura inválida');db.altura.push({id:uid(),v,d:Date.now()});}
   saveDB();closeModal();renderAll();toast('✅ Registro salvo!');}
@@ -1704,7 +1769,7 @@ function exportCSV(){
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
   a.download='historico_'+curTab+'.csv';
   document.body.appendChild(a);a.click();a.remove();
-  toast('📥 CSV exportado');
+  toast(' CSV exportado');
 }
 function renderAll(){renderHome();renderHistory();}
 window.addEventListener('resize',()=>{
@@ -1822,7 +1887,7 @@ function loadExWorkouts(){
       <div class="ex-card-actions">
         <button class="ex-btn play" onclick="startExWorkout(${workout.id})">▶</button>
         <button class="ex-btn edit" onclick="editExWorkout(${workout.id})">✏️</button>
-        <button class="ex-btn del" onclick="deleteExWorkout(${workout.id})">🗑</button>
+        <button class="ex-btn del" onclick="deleteExWorkout(${workout.id})"></button>
       </div>
     </div>
   `}).join('');
@@ -1985,7 +2050,7 @@ function saveExWorkout(){
   
   if (hasNewFile) {
     saveAudioBlob(workoutId, fileInput.files[0]).then(ok => {
-      if(ok) toast('🎵 Música salva no treino!');
+      if(ok) toast(' Música salva no treino!');
     });
   }
   
